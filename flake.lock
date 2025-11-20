@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "antigravity-pkg": {
+      "locked": {
+        "lastModified": 1763494654,
+        "narHash": "sha256-0rxeDbFNDjoT+F0TSLE8YLLDX+RfzmnKIEcwcUdTXU4=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "e9f0688b449dc77479548ae34e9ba8f6aa14e943",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "e9f0688b449dc77479548ae34e9ba8f6aa14e943",
+        "type": "github"
+      }
+    },
     "disko": {
       "inputs": {
         "nixpkgs": [
@@ -74,6 +90,7 @@
     },
     "root": {
       "inputs": {
+        "antigravity-pkg": "antigravity-pkg",
         "disko": "disko",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",

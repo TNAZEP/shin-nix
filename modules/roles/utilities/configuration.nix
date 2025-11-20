@@ -5,5 +5,6 @@
     zed-editor
     vscodium
     gh
+    nixfmt-rfc-style
   ];
 }

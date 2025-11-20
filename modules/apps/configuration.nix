@@ -1,5 +1,16 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  antigravity-pkg,
+  ...
+}:
 
+let
+  antigravityPkgs = import antigravity-pkg {
+    inherit (pkgs) system;
+    config.allowUnfree = true;
+  };
+in
 {
   programs._1password.enable = true;
   programs._1password-gui = {
@@ -8,7 +19,7 @@
     # require enabling PolKit integration on some desktop environments (e.g. Plasma).
     polkitPolicyOwners = [ "tnazep" ];
   };
-  
+
   environment.systemPackages = with pkgs; [
     vim
     wget
@@ -17,5 +28,6 @@
     htop
     fastfetch
     firefox
+    antigravityPkgs.antigravity
   ];
 }

@@ -1,17 +1,22 @@
-{ config, pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  userSettings,
+  ...
+}:
 
 {
-  imports =
-    [
-      ./disko.nix
-      ./hardware-configuration.nix
-      ../../modules/common/configuration.nix
-      ../../modules/hardware/nvidia/configuration.nix
-      ../../modules/roles/desktop/configuration.nix
-      ../../modules/roles/gaming/configuration.nix
-      ../../modules/apps/configuration.nix
-      ../../modules/roles/utilities/configuration.nix
-    ];
+  imports = [
+    ./disko.nix
+    ./hardware-configuration.nix
+    ../../modules/common/configuration.nix
+    ../../modules/hardware/nvidia/configuration.nix
+    ../../modules/roles/desktop/configuration.nix
+    ../../modules/roles/gaming/configuration.nix
+    ../../modules/apps/configuration.nix
+    ../../modules/roles/utilities/configuration.nix
+  ];
 
   networking.hostName = "midgar";
   networking.networkmanager.enable = true;
@@ -21,13 +26,16 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.tnazep = {
+  users.users.${userSettings.username} = {
     isNormalUser = true;
-    description = "TNAZEP";
-    extraGroups = [ "networkmanager" "wheel" ];
+    description = userSettings.name;
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
     shell = pkgs.zsh;
   };
-  
+
   programs = {
     ssh.startAgent = true;
   };

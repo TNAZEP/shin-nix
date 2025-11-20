@@ -1,4 +1,10 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  userSettings,
+  ...
+}:
 
 {
   imports = [
@@ -10,19 +16,17 @@
     ../../modules/roles/utilities/home.nix
   ];
 
-  home.username = "tnazep";
-  home.homeDirectory = "/home/tnazep";
+  home.username = userSettings.username;
+  home.homeDirectory = "/home/${userSettings.username}";
 
   home.stateVersion = "25.11";
 
   programs.home-manager.enable = true;
 
-   # --- allow HM to overwrite  dotfiles --------------
+  # --- allow HM to overwrite  dotfiles ---------------
 
   home.file.".ssh/config".force = true;
   # ---------------------------------------------------
-  
-
 
   programs.ssh = {
     enable = true;
@@ -36,8 +40,8 @@
     enable = true;
     settings = {
       user = {
-        name = "TNAZEP";
-        email = "jacob@ennaimi.com";
+        name = userSettings.name;
+        email = userSettings.email;
         signingKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEclWROAzXXuA3fE8qIWW55pJLOewedBGS6bT6Sf3xG4";
       };
       "gpg \"ssh\"" = {
