@@ -1,2 +1,2 @@
 # shin-nix
-My Nix config for managing NixOS systems and others
+My Nix config for managing various NixOS systems and systems using Nix on other operating systems.
