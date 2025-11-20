@@ -28,18 +28,7 @@
       ...
     }@inputs:
     let
-      userSettings = {
-        username = "tnazep";
-        name = "TNAZEP";
-        email = "jacob@ennaimi.com";
-        dotfilesDir = "/home/tnazep/shin-nix";
-        theme = "kanagawa-dragon";
-        wm = "hyprland";
-        browser = "firefox";
-        term = "alacritty";
-        font = "JetBrainsMono Nerd Font";
-        editor = "nvim";
-      };
+      userSettings = import ./settings.nix;
     in
     {
       nixosConfigurations = {
@@ -57,6 +46,7 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "backup";
               home-manager.users.${userSettings.username} = import ./hosts/midgar/home.nix;
               home-manager.extraSpecialArgs = {
                 inherit userSettings;

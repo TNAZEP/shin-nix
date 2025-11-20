@@ -1,5 +1,41 @@
 { config, pkgs, ... }:
 
 {
-  # Utilities specific home-manager config
+  programs.firefox = {
+    enable = true;
+    policies = {
+      CaptivePortal = false;
+      DisableFirefoxStudies = true;
+      DisablePocket = true;
+      DisableTelemetry = true;
+      DisableFirefoxAccounts = false;
+      NoDefaultBookmarks = true;
+      OfferToSaveLogins = false;
+      OfferToSaveLoginsDefault = false;
+      PasswordManagerEnabled = false;
+      FirefoxHome = {
+        Search = true;
+        Pocket = false;
+        Snippets = false;
+        TopSites = false;
+        Highlights = false;
+      };
+      UserMessaging = {
+        ExtensionRecommendations = false;
+        SkipOnboarding = true;
+      };
+    };
+  };
+
+  programs.alacritty.enable = true;
+
+  programs.vscode = {
+    enable = true;
+    package = pkgs.vscodium;
+  };
+
+  home.packages = with pkgs; [
+    zed-editor
+    github-desktop
+  ];
 }
