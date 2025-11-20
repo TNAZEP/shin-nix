@@ -4,7 +4,7 @@ Nix config that is modular and uses home manager for certain application configu
 
 Folder structure:
 - dev: development files, primarily descriptions of project structure
-- hosts: nixos configuration files and home manager files for each host, each host has a configuration.nix and a home.nix, contains system specific configuration
+- hosts: nixos configuration files and home manager files for each host, each host has a configuration.nix and a home.nix, contains system specific configuration. Currently midgar is setup for my NixOS desktop, ishgard is my macbook air using nixos-darwin
 - modules: nixos modules to be easily loaded for any specific systems needs
 - modules/apps: packages that are configured with home manager, to be easily imported by other modules
 - modules/common: common configuration to be loaded by all systems
