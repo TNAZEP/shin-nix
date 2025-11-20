@@ -1,16 +1,10 @@
 {
   config,
   pkgs,
-  antigravity-pkg,
   ...
 }:
 
-let
-  antigravityPkgs = import antigravity-pkg {
-    inherit (pkgs) system;
-    config.allowUnfree = true;
-  };
-in
+
 {
   programs._1password.enable = true;
   programs._1password-gui = {
@@ -20,14 +14,7 @@ in
     polkitPolicyOwners = [ "tnazep" ];
   };
 
+  nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
-    vim
-    wget
-    git
-    curl
-    htop
-    fastfetch
-    firefox
-    antigravityPkgs.antigravity
   ];
 }

@@ -26,6 +26,7 @@
   # --- allow HM to overwrite  dotfiles ---------------
 
   home.file.".ssh/config".force = true;
+  home.file.".zshrc".force = true;
   # ---------------------------------------------------
 
   programs.ssh = {

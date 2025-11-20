@@ -1,7 +1,15 @@
-{ config, pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   time.timeZone = "Asia/Tokyo"; # Assuming user is in Tokyo based on metadata, can be changed.
 
@@ -9,4 +17,14 @@
   console.keyMap = "sv-latin1";
 
   nixpkgs.config.allowUnfree = true;
+  environment.systemPackages = with pkgs; [
+    vim
+    wget
+    git
+    gh
+    curl
+    htop
+    btop
+    fastfetch
+  ];
 }
