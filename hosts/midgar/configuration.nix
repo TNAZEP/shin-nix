@@ -28,7 +28,46 @@
     shell = pkgs.zsh;
   };
   
+  programs = {
+    ssh.startAgent = true;
+  };
+
+  services = {
+    fwupd.enable = true;
+    fstrim.enable = true;
+    resolved.enable = true;
+    flatpak.enable = true;
+
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      wireplumber.enable = true;
+    };
+
+    gvfs.enable = true;
+    tumbler.enable = true;
+    # @FIX gnome gcr agent conflicts with programs.ssh.startAgent;
+    # gnome.gnome-keyring.enable = true;
+    tailscale = {
+      enable = true;
+    };
+    mullvad-vpn = {
+      enable = true;
+      package = pkgs.mullvad-vpn;
+    };
+  };
+
   programs.zsh.enable = true;
+
+  fonts.packages = with pkgs.nerd-fonts; [
+    fira-code
+    jetbrains-mono
+    bigblue-terminal
+  ];
+
+  programs.fuse.userAllowOther = true;
 
   system.stateVersion = "25.11";
 }

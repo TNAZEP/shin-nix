@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports = [
@@ -13,14 +13,39 @@
   home.username = "tnazep";
   home.homeDirectory = "/home/tnazep";
 
-  home.stateVersion = "24.05";
+  home.stateVersion = "25.11";
 
   programs.home-manager.enable = true;
+
+   # --- allow HM to overwrite  dotfiles --------------
+
+  home.file.".ssh/config".force = true;
+  # ---------------------------------------------------
   
-  # Basic git config
+
+
+  programs.ssh = {
+    enable = true;
+
+    matchBlocks."*" = {
+      identityAgent = "~/.1password/agent.sock";
+    };
+  };
+
   programs.git = {
     enable = true;
-    userName = "TNAZEP";
-    userEmail = "jacob@example.com"; # Update this
+    settings = {
+      user = {
+        name = "TNAZEP";
+        email = "jacob@ennaimi.com";
+        signingKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEclWROAzXXuA3fE8qIWW55pJLOewedBGS6bT6Sf3xG4";
+      };
+      "gpg \"ssh\"" = {
+        program = "${lib.getExe' pkgs._1password-gui "op-ssh-sign"}";
+      };
+      init.defaultBranch = "master";
+      commit.gpgSign = true;
+      gpg.format = "ssh";
+    };
   };
 }
