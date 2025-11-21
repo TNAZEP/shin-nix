@@ -14,5 +14,6 @@
     mangohud
     protontricks
     faugus-launcher
+    vesktop
   ];
 }
