@@ -1,19 +1,12 @@
 {
   config,
   pkgs,
-  antigravity-pkg,
   userSettings,
   ...
 }:
-let
-  antigravityPkgs = import antigravity-pkg {
-    inherit (pkgs) system;
-    config.allowUnfree = true;
-  };
-in
 {
   environment.systemPackages = with pkgs; [
-    antigravityPkgs.antigravity
+    antigravity
     nixfmt-rfc-style
     hyprshot
   ];

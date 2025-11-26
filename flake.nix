@@ -14,8 +14,6 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    antigravity-pkg.url = "github:nixos/nixpkgs/e9f0688b449dc77479548ae34e9ba8f6aa14e943";
   };
 
   outputs =
@@ -24,7 +22,6 @@
       nixpkgs,
       home-manager,
       disko,
-      antigravity-pkg,
       ...
     }@inputs:
     let
@@ -37,7 +34,6 @@
           specialArgs = {
             inherit inputs;
             inherit userSettings;
-            inherit antigravity-pkg;
           };
           modules = [
             disko.nixosModules.disko
