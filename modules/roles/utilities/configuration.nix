@@ -15,6 +15,7 @@ in
   environment.systemPackages = with pkgs; [
     antigravityPkgs.antigravity
     nixfmt-rfc-style
+    hyprshot
   ];
 
   programs._1password.enable = true;
