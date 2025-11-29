@@ -14,47 +14,17 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    import-tree.url = "github:vic/import-tree";
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      home-manager,
-      disko,
-      ...
-    }@inputs:
-    let
-      userSettings = import ./settings.nix;
-    in
-    {
-      nixosConfigurations = {
-        midgar = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = {
-            inherit inputs;
-            inherit userSettings;
-          };
-          modules = [
-            disko.nixosModules.disko
-            ./hosts/midgar/configuration.nix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "backup";
-              home-manager.users.${userSettings.username} = import ./hosts/midgar/home.nix;
-              home-manager.extraSpecialArgs = {
-                inherit userSettings;
-                inherit inputs;
-              };
-            }
-            {
-              environment.systemPackages = [
-              ];
-            }
-          ];
-        };
-      };
+    inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" ];
+      imports = [
+        (inputs.import-tree ./parts)
+      ];
     };
 }
