@@ -24,4 +24,18 @@
     alsa.support32Bit = true;
     pulse.enable = true;
   };
+
+  environment.systemPackages = with pkgs; [
+    qt6Packages.qt6ct
+  ];
+
+  environment.variables.QT_QPA_PLATFORMTHEME = "qt6ct";
+
+  programs.dconf.enable = true;
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    config.common.default = "gtk";
+  };
 }

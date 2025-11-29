@@ -23,5 +23,6 @@
         jdk
       ];
     })
+    shipwright
   ];
 }

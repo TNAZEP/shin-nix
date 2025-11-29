@@ -67,6 +67,9 @@
     };
   };
 
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+
   programs.zsh.enable = true;
 
   fonts.packages = with pkgs.nerd-fonts; [

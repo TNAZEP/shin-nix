@@ -9,6 +9,9 @@
     antigravity
     nixfmt-rfc-style
     hyprshot
+    nautilus
+    overskride
+    blueberry
   ];
 
   programs._1password.enable = true;
