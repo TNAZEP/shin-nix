@@ -24,14 +24,13 @@ in
       inputs.self.nixosModules.terminal
       inputs.self.nixosModules.git
       inputs.self.nixosModules.ssh
+      inputs.self.nixosModules.fonts
+      inputs.self.nixosModules.vpn
 
       inputs.home-manager.nixosModules.home-manager
       (
         { pkgs, ... }:
         {
-          _module.args = {
-            inherit userSettings inputs;
-          };
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "backup";
@@ -61,9 +60,6 @@ in
               programs.home-manager.enable = true;
 
             };
-          home-manager.extraSpecialArgs = {
-            inherit userSettings inputs;
-          };
         }
       )
       (
@@ -90,21 +86,10 @@ in
           services.flatpak.enable = true;
           services.gvfs.enable = true;
           services.tumbler.enable = true;
-          services.tailscale.enable = true;
-          services.mullvad-vpn = {
-            enable = true;
-            package = pkgs.mullvad-vpn;
-          };
 
           programs.zsh.enable = true;
           programs.fuse.userAllowOther = true;
           system.stateVersion = "25.11";
-
-          fonts.packages = with pkgs.nerd-fonts; [
-            fira-code
-            jetbrains-mono
-            bigblue-terminal
-          ];
         }
       )
     ];

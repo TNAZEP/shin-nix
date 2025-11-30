@@ -1,3 +1,4 @@
+{ config, ... }:
 {
   flake.nixosModules.git =
     { pkgs, ... }:
@@ -9,7 +10,10 @@
     };
 
   flake.homeModules.git =
-    { pkgs, userSettings, ... }:
+    { pkgs, ... }:
+    let
+      userSettings = config.meta.settings;
+    in
     {
       home.packages = [
         pkgs.github-desktop

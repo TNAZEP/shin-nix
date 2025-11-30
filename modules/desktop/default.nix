@@ -1,3 +1,4 @@
+{ inputs, ... }:
 {
   flake.nixosModules.desktop =
     { config, pkgs, ... }:
@@ -49,7 +50,6 @@
     {
       config,
       pkgs,
-      inputs,
       ...
     }:
     {

@@ -1,11 +1,13 @@
+{ config, ... }:
 {
   flake.nixosModules.utilities =
     {
-      config,
       pkgs,
-      userSettings,
       ...
     }:
+    let
+      userSettings = config.meta.settings;
+    in
     {
       environment.systemPackages = with pkgs; [
         nixfmt-rfc-style
