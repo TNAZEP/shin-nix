@@ -15,6 +15,7 @@
       imports = [
         inputs.self.homeModules.waybar
         inputs.self.homeModules.rofi
+        inputs.self.homeModules.dunst
       ];
       wayland.windowManager.hyprland = {
         enable = true;
@@ -294,9 +295,5 @@
         pkgs.kdePackages.polkit-kde-agent-1
       ];
 
-      services.dunst = {
-        enable = true;
-        configFile = ./config/dunst/dunstrc;
-      };
     };
 }
