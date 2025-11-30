@@ -22,6 +22,7 @@ in
       inputs.self.nixosModules.cosmic
       inputs.self.nixosModules.gaming
       inputs.self.nixosModules.apps
+      inputs.self.nixosModules.communication
       inputs.self.nixosModules.utilities
       inputs.self.nixosModules.editors
       inputs.self.nixosModules.terminal
@@ -47,6 +48,7 @@ in
                 inputs.self.homeModules.cosmic
                 inputs.self.homeModules.gaming
                 inputs.self.homeModules.apps
+                inputs.self.homeModules.communication
                 inputs.self.homeModules.utilities
                 inputs.self.homeModules.terminal
                 inputs.self.homeModules.editors

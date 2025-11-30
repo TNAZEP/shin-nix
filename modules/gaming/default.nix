@@ -15,7 +15,7 @@
         mangohud
         protontricks
         faugus-launcher
-        vesktop
+
         (prismlauncher.override {
           jdks = [
             jdk8
