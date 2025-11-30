@@ -12,7 +12,10 @@
   flake.homeModules.hyprland =
     { config, pkgs, ... }:
     {
-      imports = [ inputs.self.homeModules.waybar ];
+      imports = [
+        inputs.self.homeModules.waybar
+        inputs.self.homeModules.rofi
+      ];
       wayland.windowManager.hyprland = {
         enable = true;
         xwayland.enable = true;
@@ -285,13 +288,11 @@
       };
 
       home.packages = [
-        pkgs.rofi
         pkgs.swww
         pkgs.hyprshot
         pkgs.nwg-look
         pkgs.kdePackages.polkit-kde-agent-1
       ];
-      xdg.configFile."rofi/config.rasi".source = ./config/rofi/config.rasi;
 
       services.dunst = {
         enable = true;
