@@ -4,26 +4,33 @@ A modular, flake-based NixOS configuration designed for stability and ease of us
 
 ## 📂 Structure
 
-The repository is organized to separate concerns and promote reusability:
+The repository is organized using **flake-parts** and **import-tree** following the Dendritic pattern:
 
-- **`hosts/`**: Configuration for specific machines.
-    - **`midgar/`**: Desktop configuration (Nvidia 3070, KDE Plasma, Hyprland).
-        - `configuration.nix`: System-level configuration.
-        - `home.nix`: User-level configuration (Home Manager).
-        - `disko.nix`: Disk partitioning layout.
-- **`modules/`**: Reusable configuration blocks.
+- **`modules/`**: The core of the configuration, containing all system components.
     - **`apps/`**: General application packages.
-    - **`common/`**: Shared system settings (locale, time, experimental features).
-    - **`hardware/`**: Hardware-specific configurations (e.g., `nvidia`).
-    - **`roles/`**: Purpose-specific collections of modules.
-        - **`desktop/`**: Desktop environment (KDE, SDDM) and Window Managers.
-        - **`gaming/`**: Gaming setup (Steam, Faugus, Gamemode).
-        - **`utilities/`**: Development tools (Zed, VSCodium).
-- **`flake.nix`**: The entry point defining inputs and system outputs.
+    - **`core/`**: Shared system settings and common configurations.
+    - **`desktop/`**: Desktop environment (KDE, Cosmic, Hyprland) and Window Managers.
+    - **`gaming/`**: Gaming setup (Steam, Gamemode, etc.).
+    - **`hardware/`**: Hardware-specific configurations (e.g., `nvidia`, `bluetooth`).
+    - **`hosts/`**: Configuration for specific machines.
+        - **`midgar/`**: Desktop configuration.
+            - `default.nix`: System entry point.
+            - `_disko.nix`: Disk partitioning layout.
+            - `_hardware-configuration.nix`: Hardware scan results.
+    - **`utilities/`**: Development tools and system utilities.
+- **`flake.nix`**: The entry point defining inputs and system outputs using `import-tree`.
+- **`settings.nix`**: Global user settings (username, name, etc.).
+
+## Hosts
+
+|     | Hostname   | OS   			| Board            | CPU                | RAM   | GPU                       | Purpose                                                                          |
+| --- | ---------- | -------------- | ---------------- | ------------------ | ----- | ------------------------- | -------------------------------------------------------------------------------- |
+| 🖥️  | `midgar`   | NixOS	        | Asus		       | Ryzen 7 5800X3D    | 32GB  | RX 9070XT / RTX 3070	    | Main Desktop for general use, development and gaming.		                       |
+| 💻  | `ishgard`  | MacOS 26		| Apple M1 air	   | M1 8C		        | 8 GB  | M1 7C	                    | General use, light development and media consumption.                            |
 
 ## 🚀 Installation
 
-Follow these steps to install this configuration on a new machine (specifically targeting `midgar`).
+Follow these steps to install this configuration on a new machine (specifically targeting `midgar`, my desktop config).
 
 ### 1. Prepare the Environment
 Boot into the NixOS installation media and switch to the root user:
@@ -46,7 +53,7 @@ cd shin-nix
 Run Disko to partition, format, and mount the drives:
 
 ```bash
-nix run github:nix-community/disko -- --mode disko ./hosts/midgar/disko.nix
+nix run github:nix-community/disko -- --mode disko ./modules/hosts/midgar/_disko.nix
 ```
 
 ### 3. Install NixOS
