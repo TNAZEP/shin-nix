@@ -27,8 +27,6 @@
       environment.systemPackages = with pkgs; [
         vim
         wget
-        git
-        gh
         curl
         htop
         btop
@@ -39,17 +37,6 @@
   config.flake.homeModules.common =
     { config, pkgs, ... }:
     {
-      programs.zsh = {
-        enable = true;
-        oh-my-zsh = {
-          enable = true;
-          plugins = [
-            "git"
-          ];
-          theme = "robbyrussell";
-        };
-      };
-
       programs.pay-respects.enable = true;
     };
 }

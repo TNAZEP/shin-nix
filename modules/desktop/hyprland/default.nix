@@ -1,4 +1,13 @@
 {
+  flake.nixosModules.hyprland =
+    { ... }:
+    {
+      programs.hyprland = {
+        enable = true;
+        xwayland.enable = true;
+      };
+    };
+
   flake.homeModules.hyprland =
     { config, pkgs, ... }:
     {
@@ -6,7 +15,7 @@
         enable = true;
         xwayland.enable = true;
 
-        # We'll rely on the config file for now, but we can move settings here later
+        # Temporarily using config file, will migrate to declarative config later
         extraConfig = builtins.readFile ./config/hypr/hyprland.conf;
       };
 

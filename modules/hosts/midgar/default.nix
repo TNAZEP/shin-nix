@@ -15,10 +15,18 @@ in
 
       inputs.self.nixosModules.common
       inputs.self.nixosModules.nvidia
+      inputs.self.nixosModules.bluetooth
       inputs.self.nixosModules.desktop
+      inputs.self.nixosModules.plasma
+      inputs.self.nixosModules.hyprland
+      inputs.self.nixosModules.cosmic
       inputs.self.nixosModules.gaming
       inputs.self.nixosModules.apps
       inputs.self.nixosModules.utilities
+      inputs.self.nixosModules.editors
+      inputs.self.nixosModules.terminal
+      inputs.self.nixosModules.git
+      inputs.self.nixosModules.ssh
 
       inputs.home-manager.nixosModules.home-manager
       (
@@ -33,10 +41,18 @@ in
               imports = [
                 inputs.self.homeModules.common
                 inputs.self.homeModules.nvidia
+                inputs.self.homeModules.bluetooth
                 inputs.self.homeModules.desktop
+                inputs.self.homeModules.hyprland
+                inputs.self.homeModules.cosmic
                 inputs.self.homeModules.gaming
                 inputs.self.homeModules.apps
                 inputs.self.homeModules.utilities
+                inputs.self.homeModules.terminal
+                inputs.self.homeModules.editors
+                inputs.self.homeModules.browsers
+                inputs.self.homeModules.git
+                inputs.self.homeModules.ssh
               ];
 
               home.username = userSettings.username;
@@ -44,29 +60,6 @@ in
               home.stateVersion = "25.11";
               programs.home-manager.enable = true;
 
-              programs.ssh = {
-                enable = true;
-                matchBlocks."*" = {
-                  identityAgent = "~/.1password/agent.sock";
-                };
-              };
-
-              programs.git = {
-                enable = true;
-                settings = {
-                  user = {
-                    name = userSettings.name;
-                    email = userSettings.email;
-                    signingKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEclWROAzXXuA3fE8qIWW55pJLOewedBGS6bT6Sf3xG4";
-                  };
-                  "gpg \"ssh\"" = {
-                    program = "${pkgs.lib.getExe' pkgs._1password-gui "op-ssh-sign"}";
-                  };
-                  init.defaultBranch = "master";
-                  commit.gpgSign = true;
-                  gpg.format = "ssh";
-                };
-              };
             };
           home-manager.extraSpecialArgs = {
             inherit userSettings inputs;
@@ -91,7 +84,6 @@ in
             shell = pkgs.zsh;
           };
 
-          programs.ssh.startAgent = true;
           services.fwupd.enable = true;
           services.fstrim.enable = true;
           services.resolved.enable = true;
@@ -104,8 +96,6 @@ in
             package = pkgs.mullvad-vpn;
           };
 
-          hardware.bluetooth.enable = true;
-          hardware.bluetooth.powerOnBoot = true;
           programs.zsh.enable = true;
           programs.fuse.userAllowOther = true;
           system.stateVersion = "25.11";

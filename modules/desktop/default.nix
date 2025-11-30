@@ -5,12 +5,6 @@
       services.xserver.enable = true;
 
       services.displayManager.sddm.enable = true;
-      services.desktopManager.plasma6.enable = true;
-
-      programs.hyprland = {
-        enable = true;
-        xwayland.enable = true;
-      };
 
       services.xserver.xkb = {
         layout = "se";
@@ -36,7 +30,11 @@
 
       xdg.portal = {
         enable = true;
-        extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+        extraPortals = [
+          pkgs.xdg-desktop-portal-gtk
+          pkgs.xdg-desktop-portal-hyprland
+          pkgs.kdePackages.xdg-desktop-portal-kde
+        ];
         config.common.default = "gtk";
       };
     };
@@ -49,8 +47,5 @@
       ...
     }:
     {
-      imports = [
-        inputs.self.homeModules.hyprland
-      ];
     };
 }
