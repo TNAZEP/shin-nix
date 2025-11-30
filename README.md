@@ -8,6 +8,7 @@ A modular, flake-based NixOS configuration designed for stability and ease of us
 | --- | ---------- | -------------- | ---------------- | ------------------ | ----- | ------------------------- | -------------------------------------------------------------------------------- |
 | 🖥️  | `midgar`   | NixOS	        | Asus		       | Ryzen 7 5800X3D    | 32GB  | RX 9070XT / RTX 3070	    | Main Desktop for general use, development and gaming.		                       |
 | 💻  | `ishgard`  | MacOS 26		| Apple M1 air	   | M1 8C		        | 8 GB  | M1 7C	                    | General use, light development and media consumption.                            |
+| 💻  | `lestallum`  | NixOS		| HP Prodesk G5	   | intel Core i5 9500	        | 15 GB  | Intel UHD 630	                    | Home Server                            |
 
 ## 🚀 Installation
 
