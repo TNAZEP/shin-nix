@@ -1,3 +1,4 @@
+{ inputs, ... }:
 {
   flake.nixosModules.hyprland =
     { ... }:
@@ -11,6 +12,7 @@
   flake.homeModules.hyprland =
     { config, pkgs, ... }:
     {
+      imports = [ inputs.self.homeModules.waybar ];
       wayland.windowManager.hyprland = {
         enable = true;
         xwayland.enable = true;
@@ -32,7 +34,6 @@
 
           # Monitors
           monitor = [
-            ",preferred,auto,auto"
             "DP-1,2560x1440@240,0x0,1,bitdepth,10"
           ];
 
@@ -282,12 +283,6 @@
           ];
         };
       };
-
-      programs.waybar = {
-        enable = true;
-        style = ./config/waybar/style.css;
-      };
-      xdg.configFile."waybar/config".source = ./config/waybar/config;
 
       home.packages = [
         pkgs.rofi
