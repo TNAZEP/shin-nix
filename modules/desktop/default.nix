@@ -22,6 +22,12 @@
 
       environment.systemPackages = with pkgs; [
         qt6Packages.qt6ct
+        libsForQt5.qt5ct
+        qt6Packages.qtstyleplugin-kvantum
+        libsForQt5.qtstyleplugin-kvantum
+        yaru-theme
+        papirus-icon-theme
+        adwaita-icon-theme
       ];
 
       environment.variables.QT_QPA_PLATFORMTHEME = "qt6ct";

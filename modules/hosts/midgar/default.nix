@@ -1,13 +1,10 @@
 { inputs, config, ... }:
 let
-  userSettings = import ../../../settings.nix;
+  userSettings = config.meta.settings;
 in
 {
   flake.nixosConfigurations.midgar = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
-    specialArgs = {
-      inherit inputs userSettings;
-    };
     modules = [
       inputs.disko.nixosModules.disko
       ./_disko.nix
@@ -19,7 +16,6 @@ in
       inputs.self.nixosModules.desktop
       inputs.self.nixosModules.plasma
       inputs.self.nixosModules.hyprland
-      inputs.self.nixosModules.cosmic
       inputs.self.nixosModules.gaming
       inputs.self.nixosModules.apps
       inputs.self.nixosModules.communication
@@ -33,6 +29,9 @@ in
       (
         { pkgs, ... }:
         {
+          _module.args = {
+            inherit userSettings inputs;
+          };
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "backup";
@@ -45,7 +44,6 @@ in
                 inputs.self.homeModules.bluetooth
                 inputs.self.homeModules.desktop
                 inputs.self.homeModules.hyprland
-                inputs.self.homeModules.cosmic
                 inputs.self.homeModules.gaming
                 inputs.self.homeModules.apps
                 inputs.self.homeModules.communication

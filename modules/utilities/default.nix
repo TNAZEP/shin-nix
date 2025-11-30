@@ -9,8 +9,6 @@
     {
       environment.systemPackages = with pkgs; [
         nixfmt-rfc-style
-        hyprshot
-        nautilus
       ];
 
       programs._1password.enable = true;

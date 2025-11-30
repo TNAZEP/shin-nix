@@ -31,6 +31,8 @@
       home.packages = [
         pkgs.rofi
         pkgs.swww
+        pkgs.hyprshot
+        pkgs.nwg-look
         pkgs.kdePackages.polkit-kde-agent-1
       ];
       xdg.configFile."rofi/config.rasi".source = ./config/rofi/config.rasi;

@@ -4,7 +4,7 @@
     {
       environment.systemPackages = with pkgs; [
         vesktop
-        # cinny-desktop # Marked as broken in nixpkgs
+        element-desktop
       ];
     };
 
