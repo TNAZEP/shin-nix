@@ -8,4 +8,10 @@
         package = pkgs.mullvad-vpn;
       };
     };
+
+  flake.darwinModules.vpn =
+    { ... }:
+    {
+      services.tailscale.enable = true;
+    };
 }

@@ -20,6 +20,14 @@
       };
     };
 
+  flake.darwinModules.utilities =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = with pkgs; [
+        nixfmt-rfc-style
+      ];
+    };
+
   flake.homeModules.utilities =
     { config, pkgs, ... }:
     {
