@@ -1,6 +1,6 @@
 { inputs, config, ... }:
 let
-  userSettings = import ../../settings.nix;
+  userSettings = import ../../../settings.nix;
 in
 {
   flake.nixosConfigurations.midgar = inputs.nixpkgs.lib.nixosSystem {
