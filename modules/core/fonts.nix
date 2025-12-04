@@ -8,4 +8,14 @@
         bigblue-terminal
       ];
     };
+
+  flake.darwinModules.fonts =
+    { pkgs, ... }:
+    {
+      fonts.packages = with pkgs.nerd-fonts; [
+        fira-code
+        jetbrains-mono
+        bigblue-terminal
+      ];
+    };
 }

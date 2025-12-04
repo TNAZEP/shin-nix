@@ -5,6 +5,12 @@
       environment.systemPackages = [ pkgs.antigravity ];
     };
 
+  flake.darwinModules.editors =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = [ pkgs.antigravity ];
+    };
+
   flake.homeModules.editors =
     { pkgs, ... }:
     {

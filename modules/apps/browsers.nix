@@ -1,4 +1,16 @@
 {
+  flake.nixosModules.browsers =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = [ pkgs.firefox ];
+    };
+
+  flake.darwinModules.browsers =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = [ pkgs.firefox-bin ];
+    };
+
   flake.homeModules.browsers =
     { ... }:
     {

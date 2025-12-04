@@ -9,6 +9,15 @@
       ];
     };
 
+  flake.darwinModules.git =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = with pkgs; [
+        git
+        gh
+      ];
+    };
+
   flake.homeModules.git =
     { pkgs, ... }:
     let

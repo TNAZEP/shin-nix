@@ -6,10 +6,18 @@ in
   flake.darwinConfigurations.ishgard = inputs.nix-darwin.lib.darwinSystem {
     system = "aarch64-darwin";
     modules = [
+      inputs.home-manager.darwinModules.home-manager
       inputs.self.darwinModules.common
       inputs.self.darwinModules.utilities
       inputs.self.darwinModules.apps
       inputs.self.darwinModules.vpn
+      inputs.self.darwinModules.browsers
+      inputs.self.darwinModules.communication
+      inputs.self.darwinModules.editors
+      inputs.self.darwinModules.fonts
+      inputs.self.darwinModules.git
+      inputs.self.darwinModules.ssh
+      inputs.self.darwinModules.terminal
       (
         { pkgs, ... }:
         {
@@ -34,6 +42,24 @@ in
 
           # Programs
           programs.zsh.enable = true;
+
+          # Home Manager
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users.${userSettings.username} = {
+            imports = [
+              inputs.self.homeModules.common
+              inputs.self.homeModules.apps
+              inputs.self.homeModules.communication
+              inputs.self.homeModules.utilities
+              inputs.self.homeModules.terminal
+              inputs.self.homeModules.editors
+              inputs.self.homeModules.browsers
+              inputs.self.homeModules.git
+              inputs.self.homeModules.ssh
+            ];
+            home.stateVersion = "25.11";
+          };
         }
       )
     ];

@@ -5,6 +5,12 @@
       programs.zsh.enable = true;
     };
 
+  flake.darwinModules.terminal =
+    { ... }:
+    {
+      programs.zsh.enable = true;
+    };
+
   flake.homeModules.terminal =
     { pkgs, ... }:
     {
