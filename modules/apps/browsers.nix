@@ -7,8 +7,11 @@
 
   flake.darwinModules.browsers =
     { pkgs, ... }:
+    let
+      filterAvailable = builtins.filter (pkgs.lib.meta.availableOn pkgs.stdenv.hostPlatform);
+    in
     {
-      environment.systemPackages = [ pkgs.firefox-bin ];
+      environment.systemPackages = filterAvailable [ pkgs.firefox-bin ];
     };
 
   flake.homeModules.browsers =

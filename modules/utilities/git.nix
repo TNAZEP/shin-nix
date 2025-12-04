@@ -22,9 +22,10 @@
     { pkgs, ... }:
     let
       userSettings = config.meta.settings;
+      filterAvailable = builtins.filter (pkgs.lib.meta.availableOn pkgs.stdenv.hostPlatform);
     in
     {
-      home.packages = [
+      home.packages = filterAvailable [
         pkgs.github-desktop
       ];
 
