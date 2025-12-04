@@ -26,6 +26,9 @@
       environment.systemPackages = with pkgs; [
         nixfmt-rfc-style
       ];
+
+      programs._1password.enable = true;
+      programs._1password-gui = true;
     };
 
   flake.homeModules.utilities =
