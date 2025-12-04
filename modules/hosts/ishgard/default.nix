@@ -18,6 +18,7 @@ in
       inputs.self.darwinModules.git
       inputs.self.darwinModules.ssh
       inputs.self.darwinModules.terminal
+      inputs.nix-homebrew.darwinModules.nix-homebrew
       (
         { pkgs, ... }:
         {
@@ -39,6 +40,20 @@ in
 
           # Networking
           networking.hostName = "ishgard";
+
+          # Homebrew
+          nix-homebrew = {
+            enable = true;
+            enableRosetta = true;
+            user = userSettings.username;
+            autoMigrate = true;
+          };
+
+          homebrew = {
+            enable = true;
+            onActivation.autoUpdate = true;
+            onActivation.upgrade = true;
+          };
 
           # Programs
           programs.zsh.enable = true;
