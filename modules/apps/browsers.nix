@@ -10,10 +10,15 @@
     {
       homebrew.casks = [ "firefox" ];
     };
-
   flake.homeModules.browsers =
-    { config, lib, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
+      # 1Password Manifest
       onePassManifest = {
         name = "com.1password.1password";
         description = "1Password BrowserSupport";
@@ -29,17 +34,15 @@
         "extensions.pocket.enabled" = false;
         "toolkit.telemetry.enabled" = false;
         "toolkit.telemetry.reportingpolicy.firstRun" = false;
-        "signon.rememberSignons" = false; # OfferToSaveLogins
+        "signon.rememberSignons" = false;
         "browser.formfill.enable" = false;
         "browser.search.suggest.enabled" = true;
-        
         "browser.aboutConfig.showWarning" = false;
         "browser.onboarding.enabled" = false;
         "browser.messaging-system.whatsNewPanel.enabled" = false;
         "extensions.htmlaboutaddons.recommendations.enabled" = false;
         "browser.discovery.enabled" = false;
-        
-        "browser.newtabpage.activity-stream.feeds.section.topstories" = false; # Pocket
+        "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
         "browser.newtabpage.activity-stream.feeds.snippets" = false;
         "browser.newtabpage.activity-stream.feeds.topsites" = false;
         "browser.newtabpage.activity-stream.section.highlights.includePocket" = false;
@@ -51,6 +54,8 @@
       programs.firefox = {
         enable = true;
 
+        # On Darwin: Install NO package (use Homebrew Firefox), but generate configs.
+        # On Linux: Install the Firefox package.
         package = if pkgs.stdenv.isDarwin then null else pkgs.firefox;
 
         profiles.default = {
@@ -60,42 +65,17 @@
           settings = sharedSettings;
         };
 
+        # Keep policies for Linux if you want, ignored on Mac if package is null
         policies = lib.mkIf pkgs.stdenv.isLinux {
-          CaptivePortal = false;
-          DisableFirefoxStudies = true;
           DisablePocket = true;
           DisableTelemetry = true;
-          DisableFirefoxAccounts = false;
-          NoDefaultBookmarks = true;
-          OfferToSaveLogins = false;
-          OfferToSaveLoginsDefault = false;
-          PasswordManagerEnabled = false;
         };
       };
 
+      # macOS Specific: Manually place the 1Password manifest
       home.file = lib.mkIf pkgs.stdenv.isDarwin {
-        "Library/Application Support/Mozilla/NativeMessagingHosts/com.1password.1password.json".text = builtins.toJSON onePassManifest;
-      };
-
-      home.activation = lib.mkIf pkgs.stdenv.isDarwin {
-        linkFirefoxConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
-          RUN_PATH="/Applications/Firefox.app"
-          MAC_CONFIG="$HOME/Library/Application Support/Firefox"
-          HM_CONFIG="$HOME/.mozilla/firefox"
-
-          if [ -d "$RUN_PATH" ]; then
-            # If the config folder exists and is NOT a symlink, back it up
-            if [ -d "$MAC_CONFIG" ] && [ ! -L "$MAC_CONFIG" ]; then
-              echo "Backing up existing Firefox config..."
-              mv "$MAC_CONFIG" "$MAC_CONFIG.backup"
-            fi
-
-            if [ ! -L "$MAC_CONFIG" ]; then
-              echo "Linking Firefox config to Home Manager..."
-              ln -s "$HM_CONFIG" "$MAC_CONFIG"
-            fi
-          fi
-        '';
+        "Library/Application Support/Mozilla/NativeMessagingHosts/com.1password.1password.json".text =
+          builtins.toJSON onePassManifest;
       };
     };
 }

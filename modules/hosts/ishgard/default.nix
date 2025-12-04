@@ -61,6 +61,7 @@ in
           # Home Manager
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
+          home-manager.backupFileExtension = "backup";
           home-manager.users.${userSettings.username} = {
             imports = [
               inputs.self.homeModules.common
