@@ -26,6 +26,7 @@ in
       inputs.self.nixosModules.ssh
       inputs.self.nixosModules.fonts
       inputs.self.nixosModules.vpn
+      inputs.self.nixosModules.qemu
 
       inputs.home-manager.nixosModules.home-manager
       (
