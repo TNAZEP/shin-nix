@@ -180,47 +180,43 @@
           };
 
           # Execs
-          "$font" = "Ubuntu Regular 10";
-          "$monospace_font" = "JetBrainsMono Nerd Font 10";
-          "$icon_theme" = "Papirus-Dark";
-          "$gtk_theme" = "Yaru";
-          "$cursor_theme" = "Adwaita";
-          "$cursor_size" = 32;
 
           exec-once = [
-            "gsettings set org.gnome.desktop.interface font-name $font"
-            "gsettings set org.gnome.desktop.interface monospace-font-name $monospace_font"
-            "gsettings set org.gnome.desktop.wm.preferences button-layout ':'"
-            "gsettings set org.gnome.desktop.interface cursor-theme $cursor_theme"
-            "gsettings set org.gnome.desktop.interface cursor-size $cursor_size"
-            "flatpak override --user --env=GTK_THEME=$gtk_theme"
-            "flatpak override --user --env=ICON_THEME=$icon_theme"
             "swww-daemon"
             "waybar"
             "hypridle"
             "systemctl --user start plasma-polkit-agent"
             "kbuildsycoca6"
             "dbus-update-activation-environment --systemd QT_QPA_PLATFORMTHEME XDG_MENU_PREFIX"
-
-            # Custom Execs
             "swww img $HOME/Pictures/Wallpapers/skyline.jpg"
             "1password --silent"
+
+
+            #startup apps
+            "firefox"
+            "vesktop"
+            "steam"
           ];
 
           # Window Rules
-          windowrule = [
-            "suppressevent maximize, class:.*"
-            "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+          windowrulev2 = [
+            "float, class:org.pulseaudio.pavucontrol"
+            "size 800 600, class:org.pulseaudio.pavucontrol"
+
+            "workspace 1 silent, class:(firefox|Brave-browser)"
+            "workspace 2 silent, class:(vesktop|org.telegram.desktop)"
+            "workspace 5 silent, class:(steam)"
           ];
 
           # Keybinds
           "$mainMod" = "SUPER";
           "$terminal" = "alacritty";
-          "$fileManager" = "dolphin --new-window";
+          "$fileManager" = "alacritty -e superfile";
           "$runmenu" = "rofi -show drun";
           "$browser" = "firefox";
           "$editor" = "codium";
           "$script_dir" = "$HOME/.config/HyprCog";
+          
 
           bind = [
             "$mainMod, Q, killactive,"
