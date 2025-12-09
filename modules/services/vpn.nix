@@ -12,6 +12,5 @@
   flake.darwinModules.vpn =
     { ... }:
     {
-      services.tailscale.enable = true;
     };
 }
