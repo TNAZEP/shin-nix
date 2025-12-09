@@ -8,4 +8,9 @@
         package = pkgs.mullvad-vpn;
       };
     };
+
+  flake.darwinModules.vpn =
+    { ... }:
+    {
+    };
 }

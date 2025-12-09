@@ -2,7 +2,24 @@
   flake.nixosModules.editors =
     { pkgs, ... }:
     {
-      environment.systemPackages = [ pkgs.antigravity ];
+      environment.systemPackages = [
+        pkgs.antigravity
+        pkgs.nil
+        pkgs.nixd
+      ];
+    };
+
+  flake.darwinModules.editors =
+    { pkgs, ... }:
+    let
+      filterAvailable = builtins.filter (pkgs.lib.meta.availableOn pkgs.stdenv.hostPlatform);
+    in
+    {
+      environment.systemPackages = filterAvailable [
+        pkgs.antigravity
+        pkgs.nil
+        pkgs.nixd
+      ];
     };
 
   flake.homeModules.editors =
@@ -13,8 +30,18 @@
         package = pkgs.vscodium;
       };
 
-      home.packages = [
-        pkgs.zed-editor
-      ];
+      programs.zed-editor = {
+        enable = true;
+        extensions = [
+          "swift"
+          "nix"
+          "hyprland"
+        ];
+        userSettings = {
+          features = {
+          };
+          vim_mode = false;
+        };
+      };
     };
 }

@@ -30,13 +30,13 @@ in
 
       inputs.home-manager.nixosModules.home-manager
       (
-        { pkgs, ... }:
+        { ... }:
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "backup";
           home-manager.users.${userSettings.username} =
-            { pkgs, ... }:
+            { ... }:
             {
               imports = [
                 inputs.self.homeModules.common

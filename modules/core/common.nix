@@ -1,13 +1,17 @@
-{ config, lib, ... }:
+{ lib, ... }:
 {
   options.flake.homeModules = lib.mkOption {
     type = lib.types.lazyAttrsOf lib.types.unspecified;
     default = { };
   };
 
+  options.flake.darwinModules = lib.mkOption {
+    type = lib.types.lazyAttrsOf lib.types.unspecified;
+    default = { };
+  };
+
   config.flake.nixosModules.common =
     {
-      config,
       pkgs,
       ...
     }:
@@ -34,8 +38,33 @@
       ];
     };
 
+  config.flake.darwinModules.common =
+    {
+      pkgs,
+      ...
+    }:
+    {
+      nix.settings.experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+
+      time.timeZone = "Asia/Tokyo";
+
+      nixpkgs.config.allowUnfree = true;
+      environment.systemPackages = with pkgs; [
+        vim
+        wget
+        curl
+        htop
+        btop
+        fastfetch
+        superfile
+      ];
+    };
+
   config.flake.homeModules.common =
-    { config, pkgs, ... }:
+    { ... }:
     {
       programs.pay-respects.enable = true;
     };

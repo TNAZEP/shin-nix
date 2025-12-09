@@ -10,7 +10,7 @@
     };
 
   flake.homeModules.hyprland =
-    { config, pkgs, ... }:
+    { pkgs, ... }:
     {
       imports = [
         inputs.self.homeModules.waybar
@@ -191,7 +191,6 @@
             "swww img $HOME/Pictures/Wallpapers/skyline.jpg"
             "1password --silent"
 
-
             #startup apps
             "firefox"
             "vesktop"
@@ -216,7 +215,6 @@
           "$browser" = "firefox";
           "$editor" = "codium";
           "$script_dir" = "$HOME/.config/HyprCog";
-          
 
           bind = [
             "$mainMod, Q, killactive,"

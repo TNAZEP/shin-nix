@@ -20,8 +20,19 @@
       };
     };
 
+  flake.darwinModules.utilities =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = with pkgs; [
+        nixfmt-rfc-style
+      ];
+
+      programs._1password.enable = true;
+      programs._1password-gui.enable = true;
+    };
+
   flake.homeModules.utilities =
-    { config, pkgs, ... }:
+    { pkgs, ... }:
     {
       home.packages = with pkgs; [
       ];
