@@ -29,7 +29,7 @@
       programs.zsh = {
         enable = true;
 
-        initExtra = ''
+        initContent = ''
           source ${./p10k.zsh}
         '';
 
