@@ -35,6 +35,7 @@
         btop
         fastfetch
         superfile
+        nix-output-monitor
       ];
     };
 

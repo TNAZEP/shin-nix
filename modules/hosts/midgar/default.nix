@@ -1,4 +1,9 @@
-{ inputs, config, ... }:
+{
+  pkgs,
+  inputs,
+  config,
+  ...
+}:
 let
   userSettings = config.meta.settings;
 in
@@ -36,7 +41,7 @@ in
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "backup";
           home-manager.users.${userSettings.username} =
-            { ... }:
+            { pkgs, ... }:
             {
               imports = [
                 inputs.self.homeModules.common
@@ -59,10 +64,10 @@ in
               home.homeDirectory = "/home/${userSettings.username}";
               home.stateVersion = "25.11";
               programs.home-manager.enable = true;
-
             };
         }
       )
+
       (
         { pkgs, ... }:
         {
@@ -91,6 +96,26 @@ in
           programs.zsh.enable = true;
           programs.fuse.userAllowOther = true;
           system.stateVersion = "25.11";
+
+          environment.systemPackages = with pkgs; [
+            (writeShellScriptBin "zepbuild" ''
+              echo -e "''${YELLOW}Building Midgar...''${NC}"
+              cd shin-nix
+              if nixos-rebuild switch --flake .#midgar --log-format internal-json -v "$@" |& ${pkgs.nix-output-monitor}/bin/nom --json; then
+                echo -e "''${GREEN} Build Successful!''${NC}"
+
+                echo -e "''${YELLOW} Running Garbage Collection...''${NC}"
+                nix-env -p /nix/var/nix/profiles/system --delete-generations +10
+
+                nix-collect-garbage
+
+                echo -e "''${GREEN} Done. Kept last 10 generations.''${NC}"
+              else
+                echo -e "''${RED} Build Failed. Skipping Garbage Collection.''${NC}"
+                exit 1
+              fi
+            '')
+          ];
         }
       )
     ];
