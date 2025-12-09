@@ -6,21 +6,6 @@ A modular, flake-based NixOS configuration designed for stability and ease of us
 
 The repository is organized using **flake-parts** and **import-tree** following the Dendritic pattern:
 
-- **`modules/`**: The core of the configuration, containing all system components.
-    - **`apps/`**: General application packages.
-    - **`core/`**: Shared system settings and common configurations.
-    - **`desktop/`**: Desktop environment (KDE, Cosmic, Hyprland) and Window Managers.
-    - **`gaming/`**: Gaming setup (Steam, Gamemode, etc.).
-    - **`hardware/`**: Hardware-specific configurations (e.g., `nvidia`, `bluetooth`).
-    - **`hosts/`**: Configuration for specific machines.
-        - **`midgar/`**: Desktop configuration.
-            - `default.nix`: System entry point.
-            - `_disko.nix`: Disk partitioning layout.
-            - `_hardware-configuration.nix`: Hardware scan results.
-    - **`utilities/`**: Development tools and system utilities.
-- **`flake.nix`**: The entry point defining inputs and system outputs using `import-tree`.
-- **`settings.nix`**: Global user settings (username, name, etc.).
-
 ## Hosts
 
 |     | Hostname   | OS   			| Board            | CPU                | RAM   | GPU                       | Purpose                                                                          |
