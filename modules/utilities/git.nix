@@ -3,19 +3,27 @@
   flake.nixosModules.git =
     { pkgs, ... }:
     {
-      environment.systemPackages = with pkgs; [
-        git
-        gh
-      ];
+      environment.systemPackages = with pkgs; [ git gh ];
+    };
+
+  flake.darwinModules.git =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = with pkgs; [ git gh ];
     };
 
   flake.homeModules.git =
-    { pkgs, ... }:
+    { pkgs, lib, ... }: 
     let
       userSettings = config.meta.settings;
+      filterAvailable = builtins.filter (pkgs.lib.meta.availableOn pkgs.stdenv.hostPlatform);
+
+      sshSigner = if pkgs.stdenv.isDarwin
+        then "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+        else "${pkgs.lib.getExe' pkgs._1password-gui "op-ssh-sign"}";
     in
     {
-      home.packages = [
+      home.packages = filterAvailable [
         pkgs.github-desktop
       ];
 
@@ -27,9 +35,11 @@
             email = userSettings.email;
             signingKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEclWROAzXXuA3fE8qIWW55pJLOewedBGS6bT6Sf3xG4";
           };
+          
           "gpg \"ssh\"" = {
-            program = "${pkgs.lib.getExe' pkgs._1password-gui "op-ssh-sign"}";
+            program = sshSigner;
           };
+
           init.defaultBranch = "master";
           commit.gpgSign = true;
           gpg.format = "ssh";
