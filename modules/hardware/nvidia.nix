@@ -2,8 +2,6 @@
   flake.nixosModules.nvidia =
     {
       config,
-      lib,
-      pkgs,
       ...
     }:
     {
@@ -22,7 +20,7 @@
     };
 
   flake.homeModules.nvidia =
-    { config, pkgs, ... }:
+    { ... }:
     {
     };
 }

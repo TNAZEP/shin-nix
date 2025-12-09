@@ -32,7 +32,7 @@
     };
 
   flake.homeModules.utilities =
-    { config, pkgs, ... }:
+    { pkgs, ... }:
     {
       home.packages = with pkgs; [
       ];

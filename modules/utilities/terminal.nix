@@ -5,7 +5,7 @@
       programs.zsh.enable = true;
     };
 
-    flake.darwinModules.terminal =
+  flake.darwinModules.terminal =
     { ... }:
     {
       programs.zsh.enable = true;
@@ -13,7 +13,10 @@
     };
 
   flake.homeModules.terminal =
-    { config, lib, pkgs, ... }:
+    {
+      pkgs,
+      ...
+    }:
     {
       programs.alacritty = {
         enable = true;
@@ -22,8 +25,6 @@
         };
         theme = "kanagawa_dragon";
       };
-
-
 
       programs.zsh = {
         enable = true;

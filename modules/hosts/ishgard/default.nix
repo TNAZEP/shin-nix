@@ -20,7 +20,7 @@ in
       inputs.self.darwinModules.terminal
       inputs.nix-homebrew.darwinModules.nix-homebrew
       (
-        { pkgs, ... }:
+        { ... }:
         {
           # Nix configuration
           nix.settings.experimental-features = [
@@ -44,7 +44,6 @@ in
             Clicking = true;
 
           };
-
 
           system.defaults.CustomUserPreferences = {
             NSGlobalDomain = {

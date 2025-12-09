@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ lib, ... }:
 {
   options.flake.homeModules = lib.mkOption {
     type = lib.types.lazyAttrsOf lib.types.unspecified;
@@ -12,7 +12,6 @@
 
   config.flake.nixosModules.common =
     {
-      config,
       pkgs,
       ...
     }:
@@ -41,7 +40,6 @@
 
   config.flake.darwinModules.common =
     {
-      config,
       pkgs,
       ...
     }:
@@ -66,7 +64,7 @@
     };
 
   config.flake.homeModules.common =
-    { config, pkgs, ... }:
+    { ... }:
     {
       programs.pay-respects.enable = true;
     };

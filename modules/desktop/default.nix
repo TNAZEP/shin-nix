@@ -1,7 +1,7 @@
-{ inputs, ... }:
+{ ... }:
 {
   flake.nixosModules.desktop =
-    { config, pkgs, ... }:
+    { pkgs, ... }:
     {
       services.xserver.enable = true;
 
@@ -48,8 +48,6 @@
 
   flake.homeModules.desktop =
     {
-      config,
-      pkgs,
       ...
     }:
     {

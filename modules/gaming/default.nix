@@ -1,6 +1,6 @@
 {
   flake.nixosModules.gaming =
-    { config, pkgs, ... }:
+    { pkgs, ... }:
     {
       programs.steam = {
         enable = true;
@@ -29,7 +29,7 @@
     };
 
   flake.homeModules.gaming =
-    { config, pkgs, ... }:
+    { ... }:
     {
     };
 }

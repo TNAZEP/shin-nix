@@ -1,18 +1,17 @@
 {
   flake.darwinModules.browsers =
-    { pkgs, ... }:
+    { ... }:
     {
       homebrew.casks = [ "firefox" ];
     };
+
   flake.homeModules.browsers =
     {
-      config,
       lib,
       pkgs,
       ...
     }:
     let
-      # 1Password Manifest
       onePassManifest = {
         name = "com.1password.1password";
         description = "1Password BrowserSupport";
@@ -48,8 +47,6 @@
       programs.firefox = {
         enable = true;
 
-        # On Darwin: Install NO package (use Homebrew Firefox), but generate configs.
-        # On Linux: Install the Firefox package.
         package = if pkgs.stdenv.isDarwin then null else pkgs.firefox;
 
         profiles.default = {
@@ -59,14 +56,12 @@
           settings = sharedSettings;
         };
 
-        # Keep policies for Linux if you want, ignored on Mac if package is null
         policies = lib.mkIf pkgs.stdenv.isLinux {
           DisablePocket = true;
           DisableTelemetry = true;
         };
       };
 
-      # macOS Specific: Manually place the 1Password manifest
       home.file = lib.mkIf pkgs.stdenv.isDarwin {
         "Library/Application Support/Mozilla/NativeMessagingHosts/com.1password.1password.json".text =
           builtins.toJSON onePassManifest;
