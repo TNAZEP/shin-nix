@@ -6,10 +6,8 @@
       environment.systemPackages = with pkgs.kdePackages; [
         # Core/System
         dolphin
-        konsole
         kate
         kcalc
-        spectacle
         ark
         filelight
         kcharselect
@@ -27,7 +25,6 @@
         polkit-kde-agent-1
         print-manager
         systemsettings
-        xdg-desktop-portal-kde
 
         # Internet/Network
         kmail
