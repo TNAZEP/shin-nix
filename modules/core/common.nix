@@ -36,6 +36,7 @@
         fastfetch
         superfile
         nix-output-monitor
+        speedtest-cli
       ];
     };
 

@@ -6,8 +6,6 @@
       environment.systemPackages = with pkgs.kdePackages; [
         # Core/System
         dolphin
-        kate
-        kcalc
         ark
         filelight
         kcharselect
@@ -15,7 +13,6 @@
         kdialog
         kfind
         kgpg
-        khelpcenter
         kio-extras
         ksystemlog
         kwallet-pam
@@ -27,15 +24,10 @@
         systemsettings
 
         # Internet/Network
-        kmail
-        kontact
-        korganizer
-        kaddressbook
         akonadi
         kget
         kio-gdrive
 
-        ktorrent
         plasma-browser-integration
         plasma-nm
 
@@ -51,14 +43,8 @@
         audiocd-kio
 
         # Office/Productivity
-        okular
-        falkon
 
         # Utilities/Accessories
-        kalarm
-
-        ktimer
-        kweather
 
         # Theming/Customization
         breeze

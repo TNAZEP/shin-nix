@@ -1,6 +1,6 @@
 { ... }:
 {
-  flake.nixosModules.desktop =
+  flake.nixosModules.desktopGlue =
     { pkgs, ... }:
     {
       services.xserver.enable = true;
@@ -29,6 +29,7 @@
         yaru-theme
         papirus-icon-theme
         adwaita-icon-theme
+        pavucontrol
       ];
 
       environment.variables.QT_QPA_PLATFORMTHEME = "qt6ct";

@@ -18,7 +18,7 @@ in
       inputs.self.nixosModules.common
       inputs.self.nixosModules.nvidia
       inputs.self.nixosModules.bluetooth
-      inputs.self.nixosModules.desktop
+      inputs.self.nixosModules.desktopGlue
       inputs.self.nixosModules.plasma
       inputs.self.nixosModules.hyprland
       inputs.self.nixosModules.gaming
@@ -47,7 +47,7 @@ in
                 inputs.self.homeModules.common
                 inputs.self.homeModules.nvidia
                 inputs.self.homeModules.bluetooth
-                inputs.self.homeModules.desktop
+                inputs.self.homeModules.desktopGlue
                 inputs.self.homeModules.hyprland
                 inputs.self.homeModules.gaming
                 inputs.self.homeModules.apps
