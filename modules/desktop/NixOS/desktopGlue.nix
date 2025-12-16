@@ -53,7 +53,7 @@
       };
     };
 
-  flake.homeModules.desktop =
+  flake.homeModules.desktopGlue =
     {
       ...
     }:
