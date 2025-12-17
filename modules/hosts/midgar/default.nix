@@ -32,6 +32,7 @@ in
       inputs.self.nixosModules.fonts
       inputs.self.nixosModules.vpn
       inputs.self.nixosModules.qemu
+      inputs.self.nixosModules.docker
 
       inputs.home-manager.nixosModules.home-manager
       (
