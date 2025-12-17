@@ -8,6 +8,7 @@ in
     modules = [
       inputs.home-manager.darwinModules.home-manager
       inputs.self.darwinModules.common
+      inputs.self.darwinModule.yabai
       inputs.self.darwinModules.utilities
       inputs.self.darwinModules.apps
       inputs.self.darwinModules.vpn
