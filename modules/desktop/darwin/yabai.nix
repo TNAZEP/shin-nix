@@ -44,5 +44,10 @@
       services.skhd = {
         enable = true;
       };
+
+      services.sketchybar = {
+        enable = true;
+        
+      };
     };
 }
