@@ -8,7 +8,7 @@ let
   userSettings = config.meta.settings;
 in
 {
-  flake.nixosConfigurations.midgar = inputs.nixpkgs.lib.nixosSystem {
+  flake.nixosConfigurations.lestallum = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
     modules = [
       ./_hardware-configuration.nix
@@ -24,6 +24,7 @@ in
       inputs.self.nixosModules.ssh
       inputs.self.nixosModules.fonts
       inputs.self.nixosModules.qemu
+      inputs.self.nixosModules.docker
 
       inputs.home-manager.nixosModules.home-manager
       (

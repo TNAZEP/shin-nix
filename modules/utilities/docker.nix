@@ -8,7 +8,7 @@
     {
       virtualisation = {
         oci-containers.backend = "docker";
-        docker.enable = "true";
+        docker.enable = true;
       };
 
       users.users.${userSettings.username}.extraGroups = [ "docker" ];

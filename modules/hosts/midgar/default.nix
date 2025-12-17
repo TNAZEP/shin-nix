@@ -33,6 +33,7 @@ in
       inputs.self.nixosModules.vpn
       inputs.self.nixosModules.qemu
       inputs.self.nixosModules.docker
+      inputs.self.nixosModules.waydroid
 
       inputs.home-manager.nixosModules.home-manager
       (
