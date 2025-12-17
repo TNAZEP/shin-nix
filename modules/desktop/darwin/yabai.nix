@@ -7,7 +7,7 @@
     }:
     {
       services.yabai = {
-        enabled = true;
+        enable = true;
         enableScriptingAddition = true;
 
         config = {
