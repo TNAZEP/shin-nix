@@ -6,6 +6,7 @@
         pkgs.antigravity
         pkgs.nil
         pkgs.nixd
+        pkgs.code-cursor
       ];
     };
 
@@ -19,6 +20,7 @@
         pkgs.antigravity
         pkgs.nil
         pkgs.nixd
+        pkgs.code-cursor
       ];
     };
 

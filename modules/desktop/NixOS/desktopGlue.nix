@@ -32,7 +32,7 @@
         pavucontrol
       ];
 
-      environment.variables.QT_QPA_PLATFORMTHEME = "qt6ct";
+      environment.variables.QT_QPA_PLATFORMTHEME = "kde";
 
       programs.dconf.enable = true;
 
@@ -41,6 +41,7 @@
         extraPortals = [
           pkgs.xdg-desktop-portal-gtk
           pkgs.xdg-desktop-portal-hyprland
+          pkgs.kdePackages.xdg-desktop-portal-kde
         ];
         config = {
           common = {
@@ -48,15 +49,12 @@
           };
           hyprland = {
             default = [ "hyprland" "gtk" ];
+            "org.freedesktop.impl.portal.FileChooser" = [ "kde" ];
+            "org.freedesktop.impl.portal.AppChooser" = [ "kde" ];
+            "org.freedesktop.impl.portal.Settings" = [ "kde" ];
           };
         };
       };
     };
 
-  flake.homeModules.desktopGlue =
-    {
-      ...
-    }:
-    {
-    };
 }

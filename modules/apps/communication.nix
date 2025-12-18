@@ -22,9 +22,4 @@
         ]
       );
     };
-
-  flake.homeModules.communication =
-    { ... }:
-    {
-    };
 }

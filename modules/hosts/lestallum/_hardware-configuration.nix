@@ -10,7 +10,7 @@
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
-  # fileSystems are managed by disko
+  # TODO: Add fileSystems configuration for this host
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }

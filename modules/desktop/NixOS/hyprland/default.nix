@@ -1,4 +1,7 @@
-{ inputs, ... }:
+{ inputs, config, ... }:
+let
+  userSettings = config.meta.settings;
+in
 {
   flake.nixosModules.hyprland =
     { ... }:
@@ -28,12 +31,16 @@
           env = [
             "XCURSOR_SIZE,24"
             "HYPRCURSOR_SIZE,24"
-            "QT_QPA_PLATFORMTHEME,qt6ct"
+            "QT_QPA_PLATFORMTHEME,kde"
             "QT_QPA_PLATFORM,wayland;xcb"
             "QT_QUICK_CONTROLS_STYLE,org.kde.desktop"
             "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
+            "QT_AUTO_SCREEN_SCALE_FACTOR,1"
             "XDG_MENU_PREFIX,plasma-"
-            "GTK_USE_PORTAL,11"
+            "XDG_CURRENT_DESKTOP,Hyprland"
+            "XDG_SESSION_TYPE,wayland"
+            "XDG_SESSION_DESKTOP,Hyprland"
+            "GTK_USE_PORTAL,1"
           ];
 
           # Monitors
@@ -149,7 +156,7 @@
             animate_manual_resizes = false;
             animate_mouse_windowdragging = false;
             enable_swallow = false;
-            swallow_regex = "(foot|kitty|allacritty|Alacritty)";
+            swallow_regex = "(foot|kitty|alacritty|Alacritty)";
             disable_hyprland_logo = true;
             force_default_wallpaper = 0;
             new_window_takes_over_fullscreen = 2;
@@ -187,12 +194,12 @@
             "hypridle"
             "systemctl --user start plasma-polkit-agent"
             "kbuildsycoca6"
-            "dbus-update-activation-environment --systemd QT_QPA_PLATFORMTHEME XDG_MENU_PREFIX"
+            "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE XDG_SESSION_DESKTOP QT_QPA_PLATFORMTHEME QT_QPA_PLATFORM XDG_MENU_PREFIX"
             "swww img $HOME/Pictures/Wallpapers/skyline.jpg"
             "1password --silent"
 
-            #startup apps
-            "firefox"
+            # Startup apps
+            userSettings.browser
             "vesktop"
             "steam"
           ];
@@ -209,11 +216,11 @@
 
           # Keybinds
           "$mainMod" = "SUPER";
-          "$terminal" = "alacritty";
-          "$fileManager" = "alacritty -e superfile";
+          "$terminal" = userSettings.term;
+          "$fileManager" = "${userSettings.term} -e superfile";
           "$runmenu" = "rofi -show drun";
-          "$browser" = "firefox";
-          "$editor" = "codium";
+          "$browser" = userSettings.browser;
+          "$editor" = userSettings.editor;
           "$script_dir" = "$HOME/.config/HyprCog";
 
           bind = [

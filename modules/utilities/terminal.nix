@@ -1,3 +1,7 @@
+{ config, ... }:
+let
+  userSettings = config.meta.settings;
+in
 {
   flake.nixosModules.terminal =
     { ... }:
@@ -13,15 +17,12 @@
     };
 
   flake.homeModules.terminal =
-    {
-      pkgs,
-      ...
-    }:
+    { pkgs, ... }:
     {
       programs.alacritty = {
         enable = true;
         settings = {
-          font.normal.family = "JetBrainsMono Nerd Font";
+          font.normal.family = userSettings.font;
         };
         theme = "kanagawa_dragon";
       };
@@ -35,9 +36,7 @@
 
         oh-my-zsh = {
           enable = true;
-          plugins = [
-            "git"
-          ];
+          plugins = [ "git" ];
         };
 
         plugins = [

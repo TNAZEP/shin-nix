@@ -31,10 +31,4 @@
       programs._1password-gui.enable = true;
     };
 
-  flake.homeModules.utilities =
-    { pkgs, ... }:
-    {
-      home.packages = with pkgs; [
-      ];
-    };
 }

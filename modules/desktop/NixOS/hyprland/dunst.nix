@@ -47,8 +47,8 @@
             enable_recursive_icon_lookup = true;
             icon_theme = "Papirus-Dark";
             icon_position = "left";
-            min_icon_size = 64;
-            max_icon_size = 32;
+            min_icon_size = 32;
+            max_icon_size = 64;
             icon_path = "/usr/share/icons/gnome/16x16/status/:/usr/share/icons/gnome/16x16/devices/";
             sticky_history = "yes";
             history_length = 20;

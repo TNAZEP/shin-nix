@@ -5,11 +5,6 @@
       programs.ssh.startAgent = true;
     };
 
-  flake.darwinModules.ssh =
-    { ... }:
-    {
-    };
-
   flake.homeModules.ssh =
     { pkgs, ... }:
     let
