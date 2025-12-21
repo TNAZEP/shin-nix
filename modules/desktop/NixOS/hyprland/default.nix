@@ -19,12 +19,13 @@ in
         inputs.self.homeModules.waybar
         inputs.self.homeModules.rofi
         inputs.self.homeModules.dunst
+        inputs.caelestia-shell.homeManagerModules.default
       ];
       wayland.windowManager.hyprland = {
         enable = true;
         xwayland.enable = true;
         plugins = [
-          pkgs.hyprlandPlugins.hyprexpo
+          #pkgs.hyprlandPlugins.hyprexpo
         ];
         settings = {
           # Environment Variables
@@ -190,7 +191,7 @@ in
 
           exec-once = [
             "swww-daemon"
-            "waybar"
+            #"waybar"
             "hypridle"
             "systemctl --user start plasma-polkit-agent"
             "kbuildsycoca6"
@@ -288,6 +289,18 @@ in
           ];
         };
       };
+
+      #programs.caelestia = {
+      #  enable = true;
+      #  cli.enable = true;
+      #  systemd.enable = true;
+      #  
+      #  settings = {
+      #    bar.status = {
+      #      showBattery = false;
+      #    };
+      #  };
+      #};
 
       home.packages = [
         pkgs.swww

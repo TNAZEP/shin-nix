@@ -42,6 +42,7 @@ in
       inputs.self.nixosModules.qemu
       inputs.self.nixosModules.docker
       inputs.self.nixosModules.waydroid
+      inputs.self.nixosModules.java
 
       # Home Manager
       inputs.home-manager.nixosModules.home-manager

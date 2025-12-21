@@ -20,6 +20,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    caelestia-shell = {
+      url = "github:TNAZEP/ZepShell";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     flake-parts.url = "github:hercules-ci/flake-parts";
     import-tree.url = "github:vic/import-tree";
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";

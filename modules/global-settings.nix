@@ -25,7 +25,7 @@
       browser = "firefox";
       term = "alacritty";
       font = "JetBrainsMono Nerd Font";
-      editor = "nvim";
+      editor = "codium";
     };
     description = "Global settings for the configuration";
   };
