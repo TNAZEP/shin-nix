@@ -191,7 +191,7 @@ in
 
           exec-once = [
             "swww-daemon"
-            #"waybar"
+            "waybar"
             "hypridle"
             "systemctl --user start plasma-polkit-agent"
             "kbuildsycoca6"
