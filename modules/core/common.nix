@@ -37,6 +37,7 @@
         superfile
         nix-output-monitor
         speedtest-cli
+        nodejs
       ];
     };
 
@@ -62,6 +63,7 @@
         btop
         fastfetch
         superfile
+        nodejs
       ];
     };
 
