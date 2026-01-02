@@ -16,9 +16,6 @@
         # Video editing
         kdenlive
 
-        # CD/DVD burning
-        k3b
-
         # Webcam
         kamoso
       ];

@@ -160,7 +160,6 @@ in
             swallow_regex = "(foot|kitty|alacritty|Alacritty)";
             disable_hyprland_logo = true;
             force_default_wallpaper = 0;
-            new_window_takes_over_fullscreen = 2;
             allow_session_lock_restore = true;
             initial_workspace_tracking = false;
           };
@@ -184,7 +183,6 @@ in
           };
 
           experimental = {
-            xx_color_management_v4 = true;
           };
 
           # Execs
@@ -206,13 +204,13 @@ in
           ];
 
           # Window Rules
-          windowrulev2 = [
-            "float, class:org.pulseaudio.pavucontrol"
-            "size 800 600, class:org.pulseaudio.pavucontrol"
+          windowrule = [
+            "float on, match:class org.pulseaudio.pavucontrol"
+            "size 800 600, match:class org.pulseaudio.pavucontrol"
 
-            "workspace 1 silent, class:(firefox|Brave-browser)"
-            "workspace 2 silent, class:(vesktop|org.telegram.desktop)"
-            "workspace 5 silent, class:(steam)"
+            "workspace 1 silent, match:class (firefox|Brave-browser)"
+            "workspace 2 silent, match:class (vesktop|org.telegram.desktop)"
+            "workspace 5 silent, match:class (steam)"
           ];
 
           # Keybinds
@@ -289,18 +287,6 @@ in
           ];
         };
       };
-
-      #programs.caelestia = {
-      #  enable = true;
-      #  cli.enable = true;
-      #  systemd.enable = true;
-      #  
-      #  settings = {
-      #    bar.status = {
-      #      showBattery = false;
-      #    };
-      #  };
-      #};
 
       home.packages = [
         pkgs.swww
