@@ -1,6 +1,8 @@
 { inputs, config, ... }:
 let
   userSettings = config.meta.settings;
+  mainMonitor = "DP-1";
+  secondMonitor = "DP-2";
 in
 {
   flake.nixosModules.hyprland =
@@ -23,9 +25,9 @@ in
       ];
       wayland.windowManager.hyprland = {
         enable = true;
-        xwayland.enable = true;
         plugins = [
           #pkgs.hyprlandPlugins.hyprexpo
+          inputs.split-monitor-workspaces.packages.${pkgs.system}.split-monitor-workspaces
         ];
         settings = {
           # Environment Variables
@@ -45,8 +47,35 @@ in
           ];
 
           # Monitors
+          # Main monitor (right), new monitor to the left (bottom-aligned, 360 = 1440-1080)
           monitor = [
-            "DP-1,2560x1440@240,0x0,1,bitdepth,10"
+            "${mainMonitor},2560x1440@240,1920x0,1,bitdepth,10"
+            "${secondMonitor},1920x1080@144,0x360,1"
+          ];
+
+          # Workspace assignments - main monitor gets 1-10, second monitor gets 11-20
+          workspace = [
+            "1, monitor:${mainMonitor}, default:true"
+            "2, monitor:${mainMonitor}"
+            "3, monitor:${mainMonitor}"
+            "4, monitor:${mainMonitor}"
+            "5, monitor:${mainMonitor}"
+            "6, monitor:${mainMonitor}"
+            "7, monitor:${mainMonitor}"
+            "8, monitor:${mainMonitor}"
+            "9, monitor:${mainMonitor}"
+            "10, monitor:${mainMonitor}"
+            # Second monitor workspaces with names for Waybar display as 1-10
+            "11, monitor:${secondMonitor}, default:true, name:1"
+            "12, monitor:${secondMonitor}, name:2"
+            "13, monitor:${secondMonitor}, name:3"
+            "14, monitor:${secondMonitor}, name:4"
+            "15, monitor:${secondMonitor}, name:5"
+            "16, monitor:${secondMonitor}, name:6"
+            "17, monitor:${secondMonitor}, name:7"
+            "18, monitor:${secondMonitor}, name:8"
+            "19, monitor:${secondMonitor}, name:9"
+            "20, monitor:${secondMonitor}, name:10"
           ];
 
           # General
@@ -91,8 +120,8 @@ in
           decoration = {
             rounding = 0;
             blur = {
-              enabled = true;
-              xray = true;
+              enabled = false;
+              xray = false;
               special = false;
               new_optimizations = true;
               size = 10;
@@ -111,8 +140,8 @@ in
               render_power = 4;
               color = "rgba(0000002A)";
             };
-            active_opacity = 0.9;
-            inactive_opacity = 0.75;
+            active_opacity = 1;
+            inactive_opacity = 1;
             dim_inactive = false;
             dim_strength = 0.1;
             dim_special = 0;
@@ -180,6 +209,12 @@ in
               gesture_distance = 300;
               gesture_positive = false;
             };
+            split-monitor-workspaces = {
+              count = 10;
+              keep_focused = 0;
+              enable_notifications = 0;
+              enable_persistent_workspaces = 0;
+            };
           };
 
           experimental = {
@@ -216,7 +251,7 @@ in
           # Keybinds
           "$mainMod" = "SUPER";
           "$terminal" = userSettings.term;
-          "$fileManager" = "${userSettings.term} -e superfile";
+          "$fileManager" = "dolphin --new-window";
           "$runmenu" = "rofi -show drun";
           "$browser" = userSettings.browser;
           "$editor" = userSettings.editor;
@@ -241,26 +276,27 @@ in
             "$mainMod, right, movefocus, r"
             "$mainMod, up, movefocus, u"
             "$mainMod, down, movefocus, d"
-            "$mainMod, 1, workspace, 1"
-            "$mainMod, 2, workspace, 2"
-            "$mainMod, 3, workspace, 3"
-            "$mainMod, 4, workspace, 4"
-            "$mainMod, 5, workspace, 5"
-            "$mainMod, 6, workspace, 6"
-            "$mainMod, 7, workspace, 7"
-            "$mainMod, 8, workspace, 8"
-            "$mainMod, 9, workspace, 9"
-            "$mainMod, 0, workspace, 10"
-            "$mainMod SHIFT, 1, movetoworkspace, 1"
-            "$mainMod SHIFT, 2, movetoworkspace, 2"
-            "$mainMod SHIFT, 3, movetoworkspace, 3"
-            "$mainMod SHIFT, 4, movetoworkspace, 4"
-            "$mainMod SHIFT, 5, movetoworkspace, 5"
-            "$mainMod SHIFT, 6, movetoworkspace, 6"
-            "$mainMod SHIFT, 7, movetoworkspace, 7"
-            "$mainMod SHIFT, 8, movetoworkspace, 8"
-            "$mainMod SHIFT, 9, movetoworkspace, 9"
-            "$mainMod SHIFT, 0, movetoworkspace, 10"
+            # Workspace switching - uses split-workspace for per-monitor behavior
+            "$mainMod, 1, split-workspace, 1"
+            "$mainMod, 2, split-workspace, 2"
+            "$mainMod, 3, split-workspace, 3"
+            "$mainMod, 4, split-workspace, 4"
+            "$mainMod, 5, split-workspace, 5"
+            "$mainMod, 6, split-workspace, 6"
+            "$mainMod, 7, split-workspace, 7"
+            "$mainMod, 8, split-workspace, 8"
+            "$mainMod, 9, split-workspace, 9"
+            "$mainMod, 0, split-workspace, 10"
+            "$mainMod SHIFT, 1, split-movetoworkspace, 1"
+            "$mainMod SHIFT, 2, split-movetoworkspace, 2"
+            "$mainMod SHIFT, 3, split-movetoworkspace, 3"
+            "$mainMod SHIFT, 4, split-movetoworkspace, 4"
+            "$mainMod SHIFT, 5, split-movetoworkspace, 5"
+            "$mainMod SHIFT, 6, split-movetoworkspace, 6"
+            "$mainMod SHIFT, 7, split-movetoworkspace, 7"
+            "$mainMod SHIFT, 8, split-movetoworkspace, 8"
+            "$mainMod SHIFT, 9, split-movetoworkspace, 9"
+            "$mainMod SHIFT, 0, split-movetoworkspace, 10"
             "$mainMod, mouse_down, workspace, e+1"
             "$mainMod, mouse_up, workspace, e-1"
           ];
