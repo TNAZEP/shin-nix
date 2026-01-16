@@ -1,34 +1,29 @@
 { config, ... }:
+let
+  userSettings = config.meta.settings;
+
+  # Shared utility packages
+  utilityPackages = pkgs: with pkgs; [
+    nixfmt-rfc-style
+  ];
+
+  # Shared 1Password configuration
+  shared1PasswordConfig = {
+    programs._1password.enable = true;
+    programs._1password-gui.enable = true;
+  };
+in
 {
   flake.nixosModules.utilities =
-    {
-      pkgs,
-      ...
-    }:
-    let
-      userSettings = config.meta.settings;
-    in
-    {
-      environment.systemPackages = with pkgs; [
-        nixfmt-rfc-style
-      ];
-
-      programs._1password.enable = true;
-      programs._1password-gui = {
-        enable = true;
-        polkitPolicyOwners = [ userSettings.username ];
-      };
+    { pkgs, lib, ... }:
+    lib.recursiveUpdate shared1PasswordConfig {
+      environment.systemPackages = utilityPackages pkgs;
+      programs._1password-gui.polkitPolicyOwners = [ userSettings.username ];
     };
 
   flake.darwinModules.utilities =
-    { pkgs, ... }:
-    {
-      environment.systemPackages = with pkgs; [
-        nixfmt-rfc-style
-      ];
-
-      programs._1password.enable = true;
-      programs._1password-gui.enable = true;
+    { pkgs, lib, ... }:
+    lib.recursiveUpdate shared1PasswordConfig {
+      environment.systemPackages = utilityPackages pkgs;
     };
-
 }
