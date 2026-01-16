@@ -14,7 +14,12 @@
       environment.systemPackages = with pkgs; [
         mangohud
         protontricks
+        protonup-qt
         faugus-launcher
+        lsfg-vk
+        lsfg-vk-ui
+        heroic
+        nexusmods-app-unfree
       ];
     };
 }

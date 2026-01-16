@@ -62,6 +62,17 @@
         };
       };
 
+      xdg.mimeApps = lib.mkIf pkgs.stdenv.isLinux {
+        enable = true;
+        defaultApplications = {
+          "text/html" = [ "firefox.desktop" ];
+          "x-scheme-handler/http" = [ "firefox.desktop" ];
+          "x-scheme-handler/https" = [ "firefox.desktop" ];
+          "x-scheme-handler/about" = [ "firefox.desktop" ];
+          "x-scheme-handler/unknown" = [ "firefox.desktop" ];
+        };
+      };
+
       home.file = lib.mkIf pkgs.stdenv.isDarwin {
         "Library/Application Support/Mozilla/NativeMessagingHosts/com.1password.1password.json".text =
           builtins.toJSON onePassManifest;

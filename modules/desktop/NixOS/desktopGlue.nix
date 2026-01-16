@@ -22,6 +22,7 @@
       };
 
       environment.systemPackages = with pkgs; [
+        xdg-utils
         qt6Packages.qt6ct
         libsForQt5.qt5ct
         qt6Packages.qtstyleplugin-kvantum
@@ -42,17 +43,33 @@
           pkgs.xdg-desktop-portal-gtk
           pkgs.xdg-desktop-portal-hyprland
           pkgs.kdePackages.xdg-desktop-portal-kde
+          pkgs.xdg-desktop-portal-gnome
         ];
         config = {
           common = {
             default = [ "gtk" ];
           };
           hyprland = {
-            default = [ "hyprland" "gtk" ];
+            default = [ "hyprland" "kde" "gtk" ];
             "org.freedesktop.impl.portal.FileChooser" = [ "kde" ];
             "org.freedesktop.impl.portal.AppChooser" = [ "kde" ];
             "org.freedesktop.impl.portal.Settings" = [ "kde" ];
+            "org.freedesktop.impl.portal.OpenURI" = [ "gnome" ];
           };
+        };
+      };
+
+      # Enable KDE portal systemd user service
+      systemd.user.services.xdg-desktop-portal-kde = {
+        description = "Portal service (KDE implementation)";
+        partOf = [ "graphical-session.target" ];
+        after = [ "graphical-session.target" ];
+        wantedBy = [ "graphical-session.target" ];
+        serviceConfig = {
+          Type = "dbus";
+          BusName = "org.freedesktop.impl.portal.desktop.kde";
+          ExecStart = "${pkgs.kdePackages.xdg-desktop-portal-kde}/libexec/xdg-desktop-portal-kde";
+          Restart = "on-failure";
         };
       };
     };

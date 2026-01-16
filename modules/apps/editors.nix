@@ -32,18 +32,18 @@
         package = pkgs.vscodium;
       };
 
-      programs.zed-editor = {
-        enable = true;
-        extensions = [
-          "swift"
-          "nix"
-          "hyprland"
-        ];
-        userSettings = {
-          features = {
-          };
-          vim_mode = false;
-        };
-      };
+      #programs.zed-editor = {
+      #  enable = true;
+      #  extensions = [
+      #    "swift"
+      #    "nix"
+      #    "hyprland"
+      #  ];
+      #  userSettings = {
+      #    features = {
+      #    };
+      #    vim_mode = false;
+      #  };
+      #};
     };
 }

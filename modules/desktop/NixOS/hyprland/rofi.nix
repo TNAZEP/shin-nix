@@ -2,7 +2,20 @@
   flake.homeModules.rofi =
     { pkgs, ... }:
     {
-      home.packages = [ pkgs.rofi ];
+      home.packages = [
+        pkgs.rofi
+        (pkgs.writeShellScriptBin "power-menu" ''
+          entries="Shut down\nSleep\nLogout"
+          selected=$(echo -e "$entries" | ${pkgs.rofi}/bin/rofi -dmenu -i -p "Power" -theme theme)
+          if [ "$selected" = "Shut down" ]; then
+            systemctl poweroff
+          elif [ "$selected" = "Sleep" ]; then
+            systemctl suspend
+          elif [ "$selected" = "Logout" ]; then
+            hyprctl dispatch exit
+          fi
+        '')
+      ];
 
       xdg.configFile."rofi/config.rasi".text = ''
         configuration {

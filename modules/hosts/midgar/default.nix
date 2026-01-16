@@ -69,10 +69,11 @@ in
       }
 
       # Host-specific configuration
-      {
+      ({ pkgs, ... }: {
         networking.hostName = "midgar";
         system.stateVersion = "25.11";
-      }
+        boot.kernelPackages = pkgs.linuxPackages_latest;
+      })
     ];
   };
 }

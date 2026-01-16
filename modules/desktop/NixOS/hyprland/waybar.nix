@@ -1,6 +1,6 @@
 {
   flake.homeModules.waybar =
-    { ... }:
+    { pkgs, ... }:
     let
       mainMonitor = "DP-1";
       secondMonitor = "DP-2";
@@ -28,6 +28,7 @@
           "battery"
           "backlight"
           "tray"
+          "custom/power"
         ];
 
         "hyprland/mode" = {
@@ -61,6 +62,7 @@
 
         pulseaudio = {
           format = "<span color='#c4746e'>vol:</span> {volume}%";
+          on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
         };
 
         battery = {
@@ -78,6 +80,12 @@
         tray = {
           icon-size = 20;
           spacing = 7;
+          tooltip = false;
+        };
+
+        "custom/power" = {
+          format = "<span color='#252525'>[ </span><span color='#c4746e'>⏻ </span><span color='#252525'>]</span>";
+          on-click = "power-menu";
           tooltip = false;
         };
       };
@@ -99,7 +107,13 @@
                 active = "*";
               };
               persistent-workspaces = {
-                "${mainMonitor}" = [ 1 2 3 4 5 ];
+                "${mainMonitor}" = [
+                  1
+                  2
+                  3
+                  4
+                  5
+                ];
               };
             };
           };
@@ -118,7 +132,13 @@
                 active = "*";
               };
               persistent-workspaces = {
-                "${secondMonitor}" = [ 11 12 13 14 15 ];
+                "${secondMonitor}" = [
+                  11
+                  12
+                  13
+                  14
+                  15
+                ];
               };
             };
           };
@@ -155,7 +175,8 @@
           #pulseaudio,
           #battery,
           #backlight,
-          #custom-clock {
+          #custom-clock,
+          #custom-power {
               font-family: "JetBrainsMono Nerd Font";
               color: @fg;
           }

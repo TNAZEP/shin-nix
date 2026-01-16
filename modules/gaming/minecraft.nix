@@ -1,3 +1,4 @@
+{ inputs, ... }:
 {
   flake.nixosModules.minecraft =
     { pkgs, ... }:
@@ -11,6 +12,7 @@
             jdk
           ];
         })
+        inputs.hytale-launcher.packages.${pkgs.system}.default
       ];
     };
 }

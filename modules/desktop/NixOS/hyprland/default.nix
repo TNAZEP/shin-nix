@@ -262,7 +262,7 @@ in
             "$mainMod, M, exit,"
             "$mainMod, W, togglefloating,"
             "$mainMod, SPACE, exec, $runmenu"
-            "$mainMod SHIFT, SPACE, exec, $script_dir/power-menu"
+            "$mainMod SHIFT, SPACE, exec, power-menu"
             "$mainMod, P, pseudo,"
             "$mainMod, J, togglesplit,"
             "Super+Shift, F, fullscreen, 0"
