@@ -16,7 +16,7 @@ in
       inputs.self.nixosModules.common
 
       # Hardware-specific
-      inputs.self.nixosModules.nvidia
+      inputs.self.nixosModules.amd
       inputs.self.nixosModules.bluetooth
 
       # Desktop
