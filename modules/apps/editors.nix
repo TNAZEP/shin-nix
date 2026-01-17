@@ -1,26 +1,27 @@
-{ lib, ... }:
-let
-  # Shared editor/LSP packages for system level
-  editorPackages = pkgs: with pkgs; [
-    antigravity
-    nil
-    nixd
-    code-cursor
-  ];
-in
 {
   flake.nixosModules.editors =
     { pkgs, ... }:
     {
-      environment.systemPackages = editorPackages pkgs;
+      environment.systemPackages = [
+        pkgs.antigravity
+        pkgs.nil
+        pkgs.nixd
+        pkgs.code-cursor
+      ];
     };
 
   flake.darwinModules.editors =
     { pkgs, ... }:
+    let
+      filterAvailable = builtins.filter (pkgs.lib.meta.availableOn pkgs.stdenv.hostPlatform);
+    in
     {
-      environment.systemPackages = builtins.filter
-        (lib.meta.availableOn pkgs.stdenv.hostPlatform)
-        (editorPackages pkgs);
+      environment.systemPackages = filterAvailable [
+        pkgs.antigravity
+        pkgs.nil
+        pkgs.nixd
+        pkgs.code-cursor
+      ];
     };
 
   flake.homeModules.editors =
@@ -30,5 +31,19 @@ in
         enable = true;
         package = pkgs.vscodium;
       };
+
+      #programs.zed-editor = {
+      #  enable = true;
+      #  extensions = [
+      #    "swift"
+      #    "nix"
+      #    "hyprland"
+      #  ];
+      #  userSettings = {
+      #    features = {
+      #    };
+      #    vim_mode = false;
+      #  };
+      #};
     };
 }

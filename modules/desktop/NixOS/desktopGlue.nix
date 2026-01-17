@@ -1,7 +1,4 @@
-{ config, ... }:
-let
-  userSettings = config.meta.settings;
-in
+{ ... }:
 {
   flake.nixosModules.desktopGlue =
     { pkgs, ... }:
@@ -11,7 +8,7 @@ in
       services.displayManager.sddm.enable = true;
 
       services.xserver.xkb = {
-        layout = userSettings.keyboardLayout;
+        layout = "se";
         variant = "";
       };
 

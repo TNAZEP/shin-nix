@@ -1,28 +1,4 @@
-{ lib, config, ... }:
-let
-  userSettings = config.meta.settings;
-
-  # Shared packages for both NixOS and Darwin
-  sharedPackages = pkgs: with pkgs; [
-    vim
-    wget
-    curl
-    htop
-    btop
-    fastfetch
-    superfile
-    nodejs
-  ];
-
-  # Shared nix settings
-  sharedNixSettings = {
-    nix.settings.experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
-    nixpkgs.config.allowUnfree = true;
-  };
-in
+{ lib, ... }:
 {
   options.flake.homeModules = lib.mkOption {
     type = lib.types.lazyAttrsOf lib.types.unspecified;
@@ -35,30 +11,60 @@ in
   };
 
   config.flake.nixosModules.common =
-    { pkgs, ... }:
-    lib.recursiveUpdate sharedNixSettings {
-      networking.nameservers = [
-        "1.1.1.1#cloudflare-dns.com"
-        "1.0.0.1#cloudflare-dns.com"
-        "2606:4700:4700::1111#cloudflare-dns.com"
-        "2606:4700:4700::1001#cloudflare-dns.com"
+    {
+      pkgs,
+      ...
+    }:
+    {
+      nix.settings.experimental-features = [
+        "nix-command"
+        "flakes"
       ];
 
-      time.timeZone = userSettings.timezone;
-      i18n.defaultLocale = userSettings.locale;
+      time.timeZone = "Asia/Tokyo";
+
+      i18n.defaultLocale = "en_GB.UTF-8";
       console.keyMap = "sv-latin1";
 
-      environment.systemPackages = (sharedPackages pkgs) ++ (with pkgs; [
+      nixpkgs.config.allowUnfree = true;
+      environment.systemPackages = with pkgs; [
+        vim
+        wget
+        curl
+        htop
+        btop
+        fastfetch
+        superfile
         nix-output-monitor
         speedtest-cli
-      ]);
+        nodejs
+      ];
     };
 
   config.flake.darwinModules.common =
-    { pkgs, ... }:
-    lib.recursiveUpdate sharedNixSettings {
-      time.timeZone = userSettings.timezone;
-      environment.systemPackages = sharedPackages pkgs;
+    {
+      pkgs,
+      ...
+    }:
+    {
+      nix.settings.experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+
+      time.timeZone = "Asia/Tokyo";
+
+      nixpkgs.config.allowUnfree = true;
+      environment.systemPackages = with pkgs; [
+        vim
+        wget
+        curl
+        htop
+        btop
+        fastfetch
+        superfile
+        nodejs
+      ];
     };
 
   config.flake.homeModules.common =

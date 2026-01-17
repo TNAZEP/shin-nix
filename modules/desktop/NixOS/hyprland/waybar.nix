@@ -1,14 +1,9 @@
-{ config, ... }:
-let
-  userSettings = config.meta.settings;
-  monitors = userSettings.monitors;
-in
 {
   flake.homeModules.waybar =
     { pkgs, ... }:
     let
-      mainMonitor = monitors.main.output;
-      secondMonitor = monitors.secondary.output;
+      mainMonitor = "DP-1";
+      secondMonitor = "DP-2";
 
       # Shared bar configuration
       sharedBarConfig = {

@@ -1,23 +1,25 @@
-{ lib, ... }:
-let
-  # Shared communication packages
-  communicationPackages = pkgs: with pkgs; [
-    vesktop
-    element-desktop
-  ];
-in
 {
   flake.nixosModules.communication =
     { pkgs, ... }:
     {
-      environment.systemPackages = communicationPackages pkgs;
+      environment.systemPackages = with pkgs; [
+        vesktop
+        element-desktop
+      ];
     };
 
   flake.darwinModules.communication =
     { pkgs, ... }:
+    let
+      filterAvailable = builtins.filter (pkgs.lib.meta.availableOn pkgs.stdenv.hostPlatform);
+    in
     {
-      environment.systemPackages = builtins.filter
-        (lib.meta.availableOn pkgs.stdenv.hostPlatform)
-        (communicationPackages pkgs);
+      environment.systemPackages = filterAvailable (
+        with pkgs;
+        [
+          vesktop
+          element-desktop
+        ]
+      );
     };
 }

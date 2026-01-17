@@ -1,21 +1,8 @@
-{ inputs, config, lib, ... }:
+{ inputs, config, ... }:
 let
   userSettings = config.meta.settings;
-  monitors = userSettings.monitors;
-  mainMonitor = monitors.main.output;
-  secondMonitor = monitors.secondary.output;
-
-  # Generate monitor config string from settings
-  mkMonitorConfig = name: mon:
-    "${mon.output},${mon.resolution},${mon.position},${mon.scale}${lib.optionalString (mon.extraArgs != "") ",${mon.extraArgs}"}";
-
-  # Generate workspace assignments from monitor config
-  mkWorkspaceAssignments = name: mon:
-    lib.imap1 (i: ws:
-      if i == 1
-      then "${toString ws}, monitor:${mon.output}, default:true${lib.optionalString (name == "secondary") ", name:${toString i}"}"
-      else "${toString ws}, monitor:${mon.output}${lib.optionalString (name == "secondary") ", name:${toString i}"}"
-    ) mon.workspaces;
+  mainMonitor = "DP-1";
+  secondMonitor = "DP-2";
 in
 {
   flake.nixosModules.hyprland =
@@ -39,6 +26,7 @@ in
       wayland.windowManager.hyprland = {
         enable = true;
         plugins = [
+          #pkgs.hyprlandPlugins.hyprexpo
           inputs.split-monitor-workspaces.packages.${pkgs.system}.split-monitor-workspaces
         ];
         settings = {
@@ -58,15 +46,41 @@ in
             "GTK_USE_PORTAL,1"
           ];
 
-          # Monitors - configured from global-settings
-          monitor = lib.mapAttrsToList mkMonitorConfig monitors;
+          # Monitors
+          # Main monitor (right), new monitor to the left (bottom-aligned, 360 = 1440-1080)
+          monitor = [
+            "${mainMonitor},2560x1440@240,1920x0,1,bitdepth,10"
+            "${secondMonitor},1920x1080@144,0x360,1"
+          ];
 
-          # Workspace assignments - generated from monitor config
-          workspace = (lib.flatten (lib.mapAttrsToList mkWorkspaceAssignments monitors));
+          # Workspace assignments - main monitor gets 1-10, second monitor gets 11-20
+          workspace = [
+            "1, monitor:${mainMonitor}, default:true"
+            "2, monitor:${mainMonitor}"
+            "3, monitor:${mainMonitor}"
+            "4, monitor:${mainMonitor}"
+            "5, monitor:${mainMonitor}"
+            "6, monitor:${mainMonitor}"
+            "7, monitor:${mainMonitor}"
+            "8, monitor:${mainMonitor}"
+            "9, monitor:${mainMonitor}"
+            "10, monitor:${mainMonitor}"
+            # Second monitor workspaces with names for Waybar display as 1-10
+            "11, monitor:${secondMonitor}, default:true, name:1"
+            "12, monitor:${secondMonitor}, name:2"
+            "13, monitor:${secondMonitor}, name:3"
+            "14, monitor:${secondMonitor}, name:4"
+            "15, monitor:${secondMonitor}, name:5"
+            "16, monitor:${secondMonitor}, name:6"
+            "17, monitor:${secondMonitor}, name:7"
+            "18, monitor:${secondMonitor}, name:8"
+            "19, monitor:${secondMonitor}, name:9"
+            "20, monitor:${secondMonitor}, name:10"
+          ];
 
           # General
           input = {
-            kb_layout = userSettings.keyboardLayout;
+            kb_layout = "se";
             numlock_by_default = true;
             repeat_delay = 250;
             repeat_rate = 35;

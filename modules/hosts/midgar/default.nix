@@ -25,8 +25,10 @@ in
       inputs.self.nixosModules.kdeMultimedia
       inputs.self.nixosModules.hyprland
 
-      # Gaming (consolidated module with enable options)
-      inputs.self.nixosModules.gaming
+      # Gaming
+      inputs.self.nixosModules.steam
+      inputs.self.nixosModules.minecraft
+      inputs.self.nixosModules.retro
 
       # Apps & Utilities
       inputs.self.nixosModules.communication
@@ -71,14 +73,6 @@ in
         networking.hostName = "midgar";
         system.stateVersion = "25.11";
         boot.kernelPackages = pkgs.linuxPackages_latest;
-
-        # Enable gaming features for this host
-        modules.gaming = {
-          enable = true;
-          steam.enable = true;
-          minecraft.enable = true;
-          retro.enable = true;
-        };
       })
     ];
   };
