@@ -21,6 +21,7 @@ in
         inputs.self.homeModules.waybar
         inputs.self.homeModules.rofi
         inputs.self.homeModules.dunst
+        inputs.self.homeModules.hypridle
         inputs.caelestia-shell.homeManagerModules.default
       ];
       wayland.windowManager.hyprland = {
@@ -260,6 +261,7 @@ in
           bind = [
             "$mainMod, Q, killactive,"
             "$mainMod, M, exit,"
+            "$mainMod, L, exec, loginctl lock-session"
             "$mainMod, W, togglefloating,"
             "$mainMod, SPACE, exec, $runmenu"
             "$mainMod SHIFT, SPACE, exec, power-menu"
