@@ -76,10 +76,10 @@ in
     in
     {
       home.packages = [
-        pkgs.rofi-wayland
+        pkgs.rofi
         (pkgs.writeShellScriptBin "power-menu" ''
           entries="Shut down\nSleep\nLogout"
-          selected=$(echo -e "$entries" | ${pkgs.rofi-wayland}/bin/rofi -dmenu -i -p "Power" -theme theme)
+          selected=$(echo -e "$entries" | ${pkgs.rofi}/bin/rofi -dmenu -i -p "Power" -theme theme)
           if [ "$selected" = "Shut down" ]; then
             systemctl poweroff
           elif [ "$selected" = "Sleep" ]; then
