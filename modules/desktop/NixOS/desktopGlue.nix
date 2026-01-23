@@ -35,8 +35,6 @@
 
       environment.variables.QT_QPA_PLATFORMTHEME = "kde";
 
-      programs.dconf.enable = true;
-
       xdg.portal = {
         enable = true;
         extraPortals = [
@@ -51,15 +49,14 @@
           };
           hyprland = {
             default = [ "hyprland" "kde" "gtk" ];
-            "org.freedesktop.impl.portal.FileChooser" = [ "kde" ];
-            "org.freedesktop.impl.portal.AppChooser" = [ "kde" ];
-            "org.freedesktop.impl.portal.Settings" = [ "kde" ];
-            "org.freedesktop.impl.portal.OpenURI" = [ "gnome" ];
+            "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+            "org.freedesktop.impl.portal.AppChooser" = [ "gtk" ];
+            "org.freedesktop.impl.portal.Settings" = [ "gtk" ];
+            "org.freedesktop.impl.portal.OpenURI" = [ "gtk" ];
           };
         };
       };
 
-      # Enable KDE portal systemd user service
       systemd.user.services.xdg-desktop-portal-kde = {
         description = "Portal service (KDE implementation)";
         partOf = [ "graphical-session.target" ];

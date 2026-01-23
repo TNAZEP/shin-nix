@@ -21,24 +21,19 @@ in
     {
       programs.alacritty = {
         enable = true;
-        settings = {
-          font.normal.family = userSettings.font;
-        };
+        settings.font.normal.family = userSettings.font;
         theme = "kanagawa_dragon";
       };
 
       programs.zsh = {
         enable = true;
-
         initContent = ''
           source ${./p10k.zsh}
         '';
-
         oh-my-zsh = {
           enable = true;
           plugins = [ "git" ];
         };
-
         plugins = [
           {
             name = "powerlevel10k";

@@ -1,17 +1,52 @@
 { inputs, config, ... }:
 let
   userSettings = config.meta.settings;
+  colors = config.meta.theme.colors;
+
+  # Host-specific hardware configuration
+  hostConfig = {
+    monitors = [
+      {
+        name = "DP-1";
+        width = 2560;
+        height = 1440;
+        refresh = 240;
+        x = 1920;
+        y = 0;
+        scale = 1.0;
+        bitdepth = 10;
+        primary = true;
+      }
+      {
+        name = "DP-2";
+        width = 1920;
+        height = 1080;
+        refresh = 144;
+        x = 0;
+        y = 360;
+        scale = 1.0;
+        bitdepth = null;
+        primary = false;
+      }
+    ];
+    keyboard = config.meta.keyboard;
+    cursor = config.meta.cursor;
+    gtk = config.meta.gtk;
+  };
 in
 {
   flake.nixosConfigurations.midgar = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
+    specialArgs = {
+      inherit inputs hostConfig colors userSettings;
+    };
     modules = [
       # Hardware & Disk
       inputs.disko.nixosModules.disko
       ./_disko.nix
       ./_hardware-configuration.nix
 
-      # Shared NixOS configuration
+      # Core
       inputs.self.nixosModules.nixosHost
       inputs.self.nixosModules.common
 
@@ -21,8 +56,7 @@ in
 
       # Desktop
       inputs.self.nixosModules.desktopGlue
-      inputs.self.nixosModules.kdeCore
-      inputs.self.nixosModules.kdeMultimedia
+      inputs.self.nixosModules.gnome
       inputs.self.nixosModules.hyprland
 
       # Gaming
@@ -43,6 +77,7 @@ in
       inputs.self.nixosModules.docker
       inputs.self.nixosModules.waydroid
       inputs.self.nixosModules.java
+      inputs.self.nixosModules.mediaEditors
 
       # Home Manager
       inputs.home-manager.nixosModules.home-manager
@@ -50,6 +85,9 @@ in
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.backupFileExtension = "backup";
+        home-manager.extraSpecialArgs = {
+          inherit inputs hostConfig colors userSettings;
+        };
         home-manager.users.${userSettings.username} = {
           imports = [
             inputs.self.homeModules.common
@@ -60,7 +98,6 @@ in
             inputs.self.homeModules.git
             inputs.self.homeModules.ssh
           ];
-
           home.username = userSettings.username;
           home.homeDirectory = "/home/${userSettings.username}";
           home.stateVersion = "25.11";
@@ -68,7 +105,7 @@ in
         };
       }
 
-      # Host-specific configuration
+      # Host-specific
       ({ pkgs, ... }: {
         networking.hostName = "midgar";
         system.stateVersion = "25.11";

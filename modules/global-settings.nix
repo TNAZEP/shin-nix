@@ -29,4 +29,34 @@
     };
     description = "Global settings for the configuration";
   };
+
+  options.meta.gtk = lib.mkOption {
+    type = lib.types.submodule {
+      options = {
+        theme = lib.mkOption { type = lib.types.str; default = "Yaru-dark"; };
+        iconTheme = lib.mkOption { type = lib.types.str; default = "Yaru-dark"; };
+      };
+    };
+    default = {};
+  };
+
+  options.meta.cursor = lib.mkOption {
+    type = lib.types.submodule {
+      options = {
+        theme = lib.mkOption { type = lib.types.str; default = "Yaru"; };
+        size = lib.mkOption { type = lib.types.int; default = 24; };
+      };
+    };
+    default = {};
+  };
+
+  options.meta.keyboard = lib.mkOption {
+    type = lib.types.submodule {
+      options = {
+        layout = lib.mkOption { type = lib.types.str; default = "se"; };
+        variant = lib.mkOption { type = lib.types.str; default = ""; };
+      };
+    };
+    default = {};
+  };
 }

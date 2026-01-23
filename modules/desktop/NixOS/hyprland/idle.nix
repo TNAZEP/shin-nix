@@ -1,3 +1,8 @@
+{ config, ... }:
+let
+  colors = config.meta.theme.colors;
+  userSettings = config.meta.settings;
+in
 {
   flake.homeModules.hypridle =
     { pkgs, ... }:
@@ -12,24 +17,20 @@
           };
 
           listener = [
-            # Dim screen after 8 minutes (before lock)
             {
               timeout = 480;
               on-timeout = "brightnessctl -s set 10";
               on-resume = "brightnessctl -r";
             }
-            # Lock screen after 10 minutes
             {
               timeout = 600;
               on-timeout = "loginctl lock-session";
             }
-            # Turn off displays 30 seconds after locking
             {
               timeout = 630;
               on-timeout = "hyprctl dispatch dpms off";
               on-resume = "hyprctl dispatch dpms on";
             }
-            # Suspend after 2 hours
             {
               timeout = 7200;
               on-timeout = "systemctl suspend";
@@ -71,20 +72,20 @@
               dots_spacing = 0.25;
               dots_center = true;
               dots_rounding = -1;
-              outer_color = "rgb(a6a69c)";
-              inner_color = "rgb(181616)";
-              font_color = "rgb(c8c093)";
+              outer_color = "rgb(${builtins.substring 1 6 colors.border})";
+              inner_color = "rgb(${builtins.substring 1 6 colors.bg})";
+              font_color = "rgb(${builtins.substring 1 6 colors.fg-muted})";
               fade_on_empty = false;
               fade_timeout = 1000;
               placeholder_text = "<i>Password...</i>";
               hide_input = false;
               rounding = 0;
-              check_color = "rgb(e46876)";
-              fail_color = "rgb(e82424)";
+              check_color = "rgb(${builtins.substring 1 6 colors.accent-alt})";
+              fail_color = "rgb(${builtins.substring 1 6 colors.error})";
               fail_text = "<i>$FAIL <b>($ATTEMPTS)</b></i>";
               fail_timeout = 2000;
               fail_transition = 300;
-              capslock_color = "rgb(e98a00)";
+              capslock_color = "rgb(${builtins.substring 1 6 colors.warning})";
               numlock_color = -1;
               bothlock_color = -1;
               invert_numlock = false;
@@ -96,38 +97,35 @@
           ];
 
           label = [
-            # Time
             {
               monitor = "";
               text = "$TIME";
               text_align = "center";
-              color = "rgb(c8c093)";
+              color = "rgb(${builtins.substring 1 6 colors.fg-muted})";
               font_size = 90;
-              font_family = "JetBrains Mono Nerd Font";
+              font_family = userSettings.font;
               position = "0, 150";
               halign = "center";
               valign = "center";
             }
-            # Date
             {
               monitor = "";
               text = "cmd[update:60000] date '+%A, %d %B'";
               text_align = "center";
-              color = "rgb(a6a69c)";
+              color = "rgb(${builtins.substring 1 6 colors.fg-dim})";
               font_size = 24;
-              font_family = "JetBrains Mono Nerd Font";
+              font_family = userSettings.font;
               position = "0, 60";
               halign = "center";
               valign = "center";
             }
-            # Greeting
             {
               monitor = "";
               text = "Hi, $USER";
               text_align = "center";
-              color = "rgb(afa193)";
+              color = "rgb(${builtins.substring 1 6 colors.fg-dim})";
               font_size = 18;
-              font_family = "JetBrains Mono Nerd Font";
+              font_family = userSettings.font;
               position = "0, -90";
               halign = "center";
               valign = "center";
@@ -136,8 +134,6 @@
         };
       };
 
-      home.packages = [
-        pkgs.brightnessctl
-      ];
+      home.packages = [ pkgs.brightnessctl ];
     };
 }

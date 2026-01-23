@@ -10,7 +10,7 @@
     in
     {
       environment.systemPackages = with pkgs; [
-        nixfmt-rfc-style
+        nixfmt
       ];
 
       programs._1password.enable = true;
@@ -24,7 +24,7 @@
     { pkgs, ... }:
     {
       environment.systemPackages = with pkgs; [
-        nixfmt-rfc-style
+        nixfmt
       ];
 
       programs._1password.enable = true;

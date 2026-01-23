@@ -1,3 +1,8 @@
+{ config, ... }:
+let
+  colors = config.meta.theme.colors;
+  userSettings = config.meta.settings;
+in
 {
   flake.homeModules.dunst =
     { ... }:
@@ -28,14 +33,14 @@
             horizontal_padding = 8;
             text_icon_padding = 0;
             frame_width = 2;
-            frame_color = "#a6a69c";
+            frame_color = colors.border;
             gap_size = 5;
             separator_color = "frame";
             sort = "yes";
-            font = "JetBrains Mono Nerd Font 16";
+            font = "${userSettings.font} 16";
             line_height = 0;
             markup = "full";
-            format = "<b><span foreground='#afa193'>%s</span></b>\\n<span foreground='#f6f1ea'>%b</span>";
+            format = "<b><span foreground='${colors.fg-dim}'>%s</span></b>\\n<span foreground='${colors.fg}'>%b</span>";
             alignment = "left";
             vertical_alignment = "center";
             show_age_threshold = 60;
@@ -63,26 +68,16 @@
             mouse_left_click = "close_current";
             mouse_middle_click = "do_action, close_current";
             mouse_right_click = "close_all";
-            highlight = "#e46876";
-            background = "#181616";
-            foreground = "#c8c093";
+            highlight = colors.accent-alt;
+            background = colors.bg;
+            foreground = colors.fg-muted;
           };
 
-          experimental = {
-            per_monitor_dpi = false;
-          };
+          experimental.per_monitor_dpi = false;
 
-          urgency_low = {
-            timeout = 10;
-          };
-
-          urgency_normal = {
-            timeout = 10;
-          };
-
-          urgency_critical = {
-            timeout = 0;
-          };
+          urgency_low.timeout = 10;
+          urgency_normal.timeout = 10;
+          urgency_critical.timeout = 0;
         };
       };
     };

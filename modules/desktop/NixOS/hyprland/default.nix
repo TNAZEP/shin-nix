@@ -1,8 +1,10 @@
 { inputs, config, ... }:
 let
   userSettings = config.meta.settings;
-  mainMonitor = "DP-1";
-  secondMonitor = "DP-2";
+  colors = config.meta.theme.colors;
+  gtkSettings = config.meta.gtk;
+  cursorSettings = config.meta.cursor;
+  keyboardSettings = config.meta.keyboard;
 in
 {
   flake.nixosModules.hyprland =
@@ -15,7 +17,40 @@ in
     };
 
   flake.homeModules.hyprland =
-    { pkgs, ... }:
+    { pkgs, hostConfig, ... }:
+    let
+      monitors = hostConfig.monitors;
+      primaryMonitor = builtins.head (builtins.filter (m: m.primary) monitors ++ monitors);
+      secondaryMonitors = builtins.filter (m: !m.primary && m.name != primaryMonitor.name) monitors;
+
+      # Build monitor strings from hardware config
+      mkMonitorStr = m:
+        let
+          base = "${m.name},${toString m.width}x${toString m.height}@${toString m.refresh},${toString m.x}x${toString m.y},${toString m.scale}";
+          bitdepth = if m.bitdepth != null then ",bitdepth,${toString m.bitdepth}" else "";
+        in
+        "${base}${bitdepth}";
+
+      # Generate workspace assignments
+      mkWorkspaces = monitor: startIdx: count:
+        builtins.genList (i:
+          let
+            wsNum = startIdx + i;
+            isDefault = i == 0;
+            defaultStr = if isDefault then ", default:true" else "";
+            nameStr = if startIdx > 1 then ", name:${toString (i + 1)}" else "";
+          in
+          "${toString wsNum}, monitor:${monitor.name}${defaultStr}${nameStr}"
+        ) count;
+
+      primaryWorkspaces = mkWorkspaces primaryMonitor 1 10;
+      secondaryWorkspaces = builtins.concatLists (
+        builtins.genList (i:
+          let mon = builtins.elemAt secondaryMonitors i;
+          in mkWorkspaces mon (11 + i * 10) 10
+        ) (builtins.length secondaryMonitors)
+      );
+    in
     {
       imports = [
         inputs.self.homeModules.waybar
@@ -24,17 +59,52 @@ in
         inputs.self.homeModules.hypridle
         inputs.caelestia-shell.homeManagerModules.default
       ];
+
+      gtk = {
+        enable = true;
+        theme = {
+          name = gtkSettings.theme;
+          package = pkgs.yaru-theme;
+        };
+        iconTheme = {
+          name = gtkSettings.iconTheme;
+          package = pkgs.yaru-theme;
+        };
+        cursorTheme = {
+          name = cursorSettings.theme;
+          size = cursorSettings.size;
+        };
+        gtk3.extraConfig.gtk-application-prefer-dark-theme = true;
+        gtk4.extraConfig.gtk-application-prefer-dark-theme = true;
+      };
+
+      home.pointerCursor = {
+        name = cursorSettings.theme;
+        package = pkgs.yaru-theme;
+        size = cursorSettings.size;
+        gtk.enable = true;
+        x11.enable = true;
+      };
+
+      home.sessionVariables = {
+        GTK_THEME = gtkSettings.theme;
+        XCURSOR_THEME = cursorSettings.theme;
+        XCURSOR_SIZE = toString cursorSettings.size;
+      };
+
+      dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
+
       wayland.windowManager.hyprland = {
         enable = true;
         plugins = [
-          #pkgs.hyprlandPlugins.hyprexpo
-          inputs.split-monitor-workspaces.packages.${pkgs.system}.split-monitor-workspaces
+          inputs.split-monitor-workspaces.packages.${pkgs.stdenv.hostPlatform.system}.split-monitor-workspaces
         ];
         settings = {
-          # Environment Variables
           env = [
-            "XCURSOR_SIZE,24"
-            "HYPRCURSOR_SIZE,24"
+            "XCURSOR_SIZE,${toString cursorSettings.size}"
+            "XCURSOR_THEME,${cursorSettings.theme}"
+            "HYPRCURSOR_SIZE,${toString cursorSettings.size}"
+            "HYPRCURSOR_THEME,${cursorSettings.theme}"
             "QT_QPA_PLATFORMTHEME,kde"
             "QT_QPA_PLATFORM,wayland;xcb"
             "QT_QUICK_CONTROLS_STYLE,org.kde.desktop"
@@ -45,43 +115,14 @@ in
             "XDG_SESSION_TYPE,wayland"
             "XDG_SESSION_DESKTOP,Hyprland"
             "GTK_USE_PORTAL,1"
+            "GTK_THEME,${gtkSettings.theme}"
           ];
 
-          # Monitors
-          # Main monitor (right), new monitor to the left (bottom-aligned, 360 = 1440-1080)
-          monitor = [
-            "${mainMonitor},2560x1440@240,1920x0,1,bitdepth,10"
-            "${secondMonitor},1920x1080@144,0x360,1"
-          ];
+          monitor = map mkMonitorStr monitors;
+          workspace = primaryWorkspaces ++ secondaryWorkspaces;
 
-          # Workspace assignments - main monitor gets 1-10, second monitor gets 11-20
-          workspace = [
-            "1, monitor:${mainMonitor}, default:true"
-            "2, monitor:${mainMonitor}"
-            "3, monitor:${mainMonitor}"
-            "4, monitor:${mainMonitor}"
-            "5, monitor:${mainMonitor}"
-            "6, monitor:${mainMonitor}"
-            "7, monitor:${mainMonitor}"
-            "8, monitor:${mainMonitor}"
-            "9, monitor:${mainMonitor}"
-            "10, monitor:${mainMonitor}"
-            # Second monitor workspaces with names for Waybar display as 1-10
-            "11, monitor:${secondMonitor}, default:true, name:1"
-            "12, monitor:${secondMonitor}, name:2"
-            "13, monitor:${secondMonitor}, name:3"
-            "14, monitor:${secondMonitor}, name:4"
-            "15, monitor:${secondMonitor}, name:5"
-            "16, monitor:${secondMonitor}, name:6"
-            "17, monitor:${secondMonitor}, name:7"
-            "18, monitor:${secondMonitor}, name:8"
-            "19, monitor:${secondMonitor}, name:9"
-            "20, monitor:${secondMonitor}, name:10"
-          ];
-
-          # General
           input = {
-            kb_layout = "se";
+            kb_layout = keyboardSettings.layout;
             numlock_by_default = true;
             repeat_delay = 250;
             repeat_rate = 35;
@@ -95,17 +136,15 @@ in
             follow_mouse = 1;
           };
 
-          binds = {
-            scroll_event_delay = 0;
-          };
+          binds.scroll_event_delay = 0;
 
           general = {
             gaps_in = 4;
             gaps_out = 8;
             gaps_workspaces = 50;
             border_size = 2;
-            "col.active_border" = "rgb(a6a69c)";
-            "col.inactive_border" = "rgb(353535)";
+            "col.active_border" = "rgb(${builtins.substring 1 6 colors.border})";
+            "col.inactive_border" = "rgb(${builtins.substring 1 6 colors.border-inactive})";
             resize_on_border = true;
             no_focus_fallback = true;
             layout = "dwindle";
@@ -218,45 +257,14 @@ in
             };
           };
 
-          experimental = {
-          };
+          experimental = { };
 
-          # Execs
-
-          exec-once = [
-            "swww-daemon"
-            "waybar"
-            "hypridle"
-            "systemctl --user start plasma-polkit-agent"
-            "kbuildsycoca6"
-            "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE XDG_SESSION_DESKTOP QT_QPA_PLATFORMTHEME QT_QPA_PLATFORM XDG_MENU_PREFIX"
-            "swww img $HOME/Pictures/Wallpapers/skyline.jpg"
-            "1password --silent"
-
-            # Startup apps
-            userSettings.browser
-            "vesktop"
-            "steam"
-          ];
-
-          # Window Rules
-          windowrule = [
-            "float on, match:class org.pulseaudio.pavucontrol"
-            "size 800 600, match:class org.pulseaudio.pavucontrol"
-
-            "workspace 1 silent, match:class (firefox|Brave-browser)"
-            "workspace 2 silent, match:class (vesktop|org.telegram.desktop)"
-            "workspace 5 silent, match:class (steam)"
-          ];
-
-          # Keybinds
           "$mainMod" = "SUPER";
           "$terminal" = userSettings.term;
-          "$fileManager" = "dolphin --new-window";
+          "$fileManager" = "nautilus --new-window";
           "$runmenu" = "rofi -show drun";
           "$browser" = userSettings.browser;
           "$editor" = userSettings.editor;
-          "$script_dir" = "$HOME/.config/HyprCog";
 
           bind = [
             "$mainMod, Q, killactive,"
@@ -278,7 +286,6 @@ in
             "$mainMod, right, movefocus, r"
             "$mainMod, up, movefocus, u"
             "$mainMod, down, movefocus, d"
-            # Workspace switching - uses split-workspace for per-monitor behavior
             "$mainMod, 1, split-workspace, 1"
             "$mainMod, 2, split-workspace, 2"
             "$mainMod, 3, split-workspace, 3"
@@ -323,15 +330,38 @@ in
             ", XF86AudioPlay, exec, playerctl play-pause"
             ", XF86AudioPrev, exec, playerctl previous"
           ];
+
+          windowrule = [
+            "float on, match:class org.pulseaudio.pavucontrol"
+            "size 800 600, match:class org.pulseaudio.pavucontrol"
+            "workspace 1 silent, match:class (firefox|Brave-browser)"
+            "workspace 2 silent, match:class (vesktop|org.telegram.desktop)"
+            "workspace 5 silent, match:class (steam)"
+          ];
+
+          exec-once = [
+            "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE XDG_SESSION_DESKTOP QT_QPA_PLATFORMTHEME QT_QPA_PLATFORM XDG_MENU_PREFIX GTK_THEME XCURSOR_THEME XCURSOR_SIZE"
+            "systemctl --user import-environment"
+            "swww-daemon"
+            "waybar"
+            "hypridle"
+            "systemctl --user start plasma-polkit-agent"
+            "kbuildsycoca6"
+            "swww img $HOME/Pictures/Wallpapers/skyline.jpg"
+            "1password --silent"
+            userSettings.browser
+            "vesktop"
+            "steam"
+          ];
         };
       };
 
-      home.packages = [
-        pkgs.swww
-        pkgs.hyprshot
-        pkgs.nwg-look
-        pkgs.kdePackages.polkit-kde-agent-1
+      home.packages = with pkgs; [
+        swww
+        hyprshot
+        nwg-look
+        kdePackages.polkit-kde-agent-1
+        playerctl
       ];
-
     };
 }

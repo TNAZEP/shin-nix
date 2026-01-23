@@ -12,7 +12,7 @@
             jdk
           ];
         })
-        inputs.hytale-launcher.packages.${pkgs.system}.default
+        inputs.hytale-launcher.packages.${pkgs.stdenv.hostPlatform.system}.default
       ];
     };
 }

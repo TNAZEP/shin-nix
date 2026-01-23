@@ -1,11 +1,16 @@
+{ config, ... }:
+let
+  colors = config.meta.theme.colors;
+  userSettings = config.meta.settings;
+in
 {
   flake.homeModules.waybar =
-    { pkgs, ... }:
+    { pkgs, hostConfig, ... }:
     let
-      mainMonitor = "DP-1";
-      secondMonitor = "DP-2";
+      monitors = hostConfig.monitors;
+      primaryMonitor = builtins.head (builtins.filter (m: m.primary) monitors ++ monitors);
+      secondaryMonitors = builtins.filter (m: !m.primary && m.name != primaryMonitor.name) monitors;
 
-      # Shared bar configuration
       sharedBarConfig = {
         layer = "top";
         position = "top";
@@ -36,44 +41,35 @@
         };
 
         "custom/clock" = {
-          format = "<span color='#252525'>[ </span>{text}<span color='#252525'> ]</span>";
+          format = "<span color='${colors.bg-alt}'>[ </span>{text}<span color='${colors.bg-alt}'> ]</span>";
           exec = "date +'%H:%M %a, %b %d' | awk '{print tolower($0)}'";
           interval = 3;
         };
 
         cpu = {
-          format = "<span color='#252525'>[ </span><span color='#c4746e'>cpu: </span>{icon0}{icon1}{icon2}{icon3} {usage:>2}%<span color='#252525'> / </span>";
-          format-icons = [
-            " "
-            "▂"
-            "▃"
-            "▄"
-            "▅"
-            "▆"
-            "▇"
-            "█"
-          ];
+          format = "<span color='${colors.bg-alt}'>[ </span><span color='${colors.accent}'>cpu: </span>{icon0}{icon1}{icon2}{icon3} {usage:>2}%<span color='${colors.bg-alt}'> / </span>";
+          format-icons = [ " " "▂" "▃" "▄" "▅" "▆" "▇" "█" ];
         };
 
         "hyprland/language" = {
-          format = "<span color='#c4746e'>key: </span>{short}<span color='#252525'> / </span>";
+          format = "<span color='${colors.accent}'>key: </span>{short}<span color='${colors.bg-alt}'> / </span>";
           tooltip = false;
         };
 
         pulseaudio = {
-          format = "<span color='#c4746e'>vol:</span> {volume}%";
-          on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
+          format = "<span color='${colors.accent}'>vol:</span> {volume}%";
+          on-click = "pavucontrol";
         };
 
         battery = {
-          format = "<span color='#252525'> / </span><span color='#c4746e'>bat:</span> {capacity}%";
-          format-charging = "<span color='#252525'> / </span><span color='#c4746e'>ac:</span> {capacity}%";
+          format = "<span color='${colors.bg-alt}'> / </span><span color='${colors.accent}'>bat:</span> {capacity}%";
+          format-charging = "<span color='${colors.bg-alt}'> / </span><span color='${colors.accent}'>ac:</span> {capacity}%";
           tooltip = false;
           interval = 20;
         };
 
         backlight = {
-          format = "<span color='#252525'> / </span><span color='#c4746e'>mon:</span> {percent}%<span color='#252525'> ]</span>";
+          format = "<span color='${colors.bg-alt}'> / </span><span color='${colors.accent}'>mon:</span> {percent}%<span color='${colors.bg-alt}'> ]</span>";
           tooltip = false;
         };
 
@@ -84,9 +80,26 @@
         };
 
         "custom/power" = {
-          format = "<span color='#252525'>[ </span><span color='#c4746e'>⏻ </span><span color='#252525'>]</span>";
+          format = "<span color='${colors.bg-alt}'>[ </span><span color='${colors.accent}'>⏻ </span><span color='${colors.bg-alt}'>]</span>";
           on-click = "power-menu";
           tooltip = false;
+        };
+      };
+
+      mkBarConfig = monitor: workspaceIds: sharedBarConfig // {
+        output = monitor.name;
+        "hyprland/workspaces" = {
+          disable-scroll = true;
+          all-outputs = false;
+          format = "{icon}{name}";
+          format-icons = {
+            default = " ";
+            urgent = "!";
+            active = "*";
+          };
+          persistent-workspaces = {
+            "${monitor.name}" = workspaceIds;
+          };
         };
       };
     in
@@ -94,66 +107,29 @@
       programs.waybar = {
         enable = true;
         settings = {
-          # Main monitor bar (DP-1)
-          mainBar = sharedBarConfig // {
-            output = mainMonitor;
-            "hyprland/workspaces" = {
-              disable-scroll = true;
-              all-outputs = false;
-              format = "{icon}{name}";
-              format-icons = {
-                default = " ";
-                urgent = "!";
-                active = "*";
-              };
-              persistent-workspaces = {
-                "${mainMonitor}" = [
-                  1
-                  2
-                  3
-                  4
-                  5
-                ];
-              };
-            };
-          };
+          mainBar = mkBarConfig primaryMonitor [ 1 2 3 4 5 ];
+        } // (builtins.listToAttrs (
+          builtins.genList (i:
+            let
+              mon = builtins.elemAt secondaryMonitors i;
+              startWs = 11 + i * 10;
+            in {
+              name = "bar${toString (i + 2)}";
+              value = mkBarConfig mon (builtins.genList (j: startWs + j) 5);
+            }
+          ) (builtins.length secondaryMonitors)
+        ));
 
-          # Second monitor bar
-          secondBar = sharedBarConfig // {
-            output = secondMonitor;
-            "hyprland/workspaces" = {
-              disable-scroll = true;
-              all-outputs = false;
-              # Use {name} to display the custom workspace names (1-10) instead of IDs (11-20)
-              format = "{icon}{name}";
-              format-icons = {
-                default = " ";
-                urgent = "!";
-                active = "*";
-              };
-              persistent-workspaces = {
-                "${secondMonitor}" = [
-                  11
-                  12
-                  13
-                  14
-                  15
-                ];
-              };
-            };
-          };
-        };
         style = ''
-          @define-color accent #c4746e;
-          @define-color fg #c5c9c5;
-          @define-color bg #181616;
-          @define-color bg-alt #a6a69c;
+          @define-color accent ${colors.accent};
+          @define-color fg ${colors.fg};
+          @define-color bg ${colors.bg};
+          @define-color bg-alt ${colors.fg-dim};
 
           * {
               font-size: 16px;
               min-height: 0;
           }
-
 
           window#waybar {
               margin: 10px 10px 0px 10px;
@@ -165,7 +141,7 @@
           }
 
           #mode {
-              font-family: "JetBrainsMono Nerd Font";
+              font-family: "${userSettings.font}";
               font-weight: bold;
               color: @accent;
           }
@@ -177,12 +153,12 @@
           #backlight,
           #custom-clock,
           #custom-power {
-              font-family: "JetBrainsMono Nerd Font";
+              font-family: "${userSettings.font}";
               color: @fg;
           }
 
           #workspaces {
-              font-family: "JetBrainsMono Nerd Font";
+              font-family: "${userSettings.font}";
               border-bottom: 2px solid @bg-alt;
               border-left: 2px solid @bg-alt;
               border-top: 2px solid @bg-alt;

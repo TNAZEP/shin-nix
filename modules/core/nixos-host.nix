@@ -1,4 +1,3 @@
-# Shared NixOS configuration for all hosts
 { config, ... }:
 let
   userSettings = config.meta.settings;
@@ -7,14 +6,19 @@ in
   flake.nixosModules.nixosHost =
     { pkgs, ... }:
     {
-      # Bootloader
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
 
-      # Networking
       networking.networkmanager.enable = true;
+      networking.networkmanager.dns = "systemd-resolved";
 
-      # User configuration
+      networking.nameservers = [
+        "1.1.1.1"
+        "1.0.0.1"
+        "2606:4700:4700::1111"
+        "2606:4700:4700::1001"
+      ];
+
       users.users.${userSettings.username} = {
         isNormalUser = true;
         description = userSettings.name;
@@ -25,19 +29,26 @@ in
         shell = pkgs.zsh;
       };
 
-      # Common services
       services.fwupd.enable = true;
       services.fstrim.enable = true;
-      services.resolved.enable = true;
+
+      services.resolved = {
+        enable = true;
+        dnsovertls = "opportunistic";
+        domains = [ "~." ];
+        fallbackDns = [
+          "1.1.1.1"
+          "1.0.0.1"
+          "2606:4700:4700::1111"
+          "2606:4700:4700::1001"
+        ];
+      };
       services.flatpak.enable = true;
       services.gvfs.enable = true;
       services.tumbler.enable = true;
 
-      # Shell
-      programs.zsh.enable = true;
       programs.fuse.userAllowOther = true;
 
-      # Build script - generates a zepbuild command for the current host
       environment.systemPackages = [
         (pkgs.writeShellScriptBin "zepbuild" ''
           YELLOW='\033[1;33m'
