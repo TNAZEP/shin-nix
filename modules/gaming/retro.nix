@@ -8,6 +8,9 @@
         _2ship2harkinian
         perfect_dark
 
+        #Emulation
+        retroarch-full
+
         #PC
         ironwail
       ];

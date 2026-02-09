@@ -19,7 +19,7 @@
         lsfg-vk
         lsfg-vk-ui
         heroic
-        nexusmods-app-unfree
+        wowup-cf
       ];
     };
 }

@@ -86,20 +86,37 @@ in
         };
       };
 
-      mkBarConfig = monitor: workspaceIds: sharedBarConfig // {
-        output = monitor.name;
+      # Main monitor bar config (workspaces 1-10)
+      mainBarConfig = sharedBarConfig // {
+        output = primaryMonitor.name;
         "hyprland/workspaces" = {
-          disable-scroll = true;
-          all-outputs = false;
-          format = "{icon}{name}";
+          format = "{icon}{id}";
           format-icons = {
+            active = "*";
             default = " ";
             urgent = "!";
+          };
+          on-click = "activate";
+          sort-by-number = true;
+          active-only = false;
+          all-outputs = false;
+        };
+      };
+
+      # Secondary monitor bar config (workspaces 11-20, displayed as 1-10)
+      mkSecondaryBarConfig = monitor: sharedBarConfig // {
+        output = monitor.name;
+        "hyprland/workspaces" = {
+          format = "{icon}{name}";
+          format-icons = {
             active = "*";
+            default = " ";
+            urgent = "!";
           };
-          persistent-workspaces = {
-            "${monitor.name}" = workspaceIds;
-          };
+          on-click = "activate";
+          sort-by-number = true;
+          active-only = false;
+          all-outputs = false;
         };
       };
     in
@@ -107,15 +124,14 @@ in
       programs.waybar = {
         enable = true;
         settings = {
-          mainBar = mkBarConfig primaryMonitor [ 1 2 3 4 5 ];
+          mainBar = mainBarConfig;
         } // (builtins.listToAttrs (
           builtins.genList (i:
             let
               mon = builtins.elemAt secondaryMonitors i;
-              startWs = 11 + i * 10;
             in {
               name = "bar${toString (i + 2)}";
-              value = mkBarConfig mon (builtins.genList (j: startWs + j) 5);
+              value = mkSecondaryBarConfig mon;
             }
           ) (builtins.length secondaryMonitors)
         ));
@@ -178,11 +194,14 @@ in
               transition: none;
           }
 
-          #workspaces button.active,
-          #workspaces button.visible {
+          #workspaces button.active {
               border-radius: 0;
               color: @accent;
               font-weight: bold;
+          }
+
+          #workspaces button.visible {
+              color: @fg;
           }
 
           #tray {

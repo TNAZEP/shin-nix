@@ -17,13 +17,12 @@ in
     };
 
   flake.homeModules.hyprland =
-    { pkgs, hostConfig, ... }:
+    { pkgs, lib, hostConfig, ... }:
     let
       monitors = hostConfig.monitors;
       primaryMonitor = builtins.head (builtins.filter (m: m.primary) monitors ++ monitors);
       secondaryMonitors = builtins.filter (m: !m.primary && m.name != primaryMonitor.name) monitors;
 
-      # Build monitor strings from hardware config
       mkMonitorStr = m:
         let
           base = "${m.name},${toString m.width}x${toString m.height}@${toString m.refresh},${toString m.x}x${toString m.y},${toString m.scale}";
@@ -31,7 +30,6 @@ in
         in
         "${base}${bitdepth}";
 
-      # Generate workspace assignments
       mkWorkspaces = monitor: startIdx: count:
         builtins.genList (i:
           let
@@ -60,39 +58,70 @@ in
         inputs.caelestia-shell.homeManagerModules.default
       ];
 
+      # GTK theming
       gtk = {
         enable = true;
         theme = {
-          name = gtkSettings.theme;
+          name = "Yaru-purple-dark";
           package = pkgs.yaru-theme;
         };
         iconTheme = {
-          name = gtkSettings.iconTheme;
+          name = "Yaru-purple-dark";
           package = pkgs.yaru-theme;
         };
         cursorTheme = {
-          name = cursorSettings.theme;
+          name = "Yaru";
+          package = pkgs.yaru-theme;
           size = cursorSettings.size;
         };
-        gtk3.extraConfig.gtk-application-prefer-dark-theme = true;
-        gtk4.extraConfig.gtk-application-prefer-dark-theme = true;
+        gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
+        gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
       };
 
       home.pointerCursor = {
-        name = cursorSettings.theme;
+        name = "Yaru";
         package = pkgs.yaru-theme;
         size = cursorSettings.size;
         gtk.enable = true;
         x11.enable = true;
       };
 
-      home.sessionVariables = {
-        GTK_THEME = gtkSettings.theme;
-        XCURSOR_THEME = cursorSettings.theme;
-        XCURSOR_SIZE = toString cursorSettings.size;
+      # dconf settings for dark mode
+      dconf.settings = {
+        "org/gnome/desktop/interface" = {
+          color-scheme = "prefer-dark";
+          gtk-theme = "Yaru-purple-dark";
+          icon-theme = "Yaru-purple-dark";
+        };
       };
 
-      dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
+      # Systemd user service to ensure dconf is set at every login
+      systemd.user.services.dconf-dark-mode = {
+        Unit = {
+          Description = "Set dark mode in dconf";
+          After = [ "graphical-session-pre.target" ];
+          PartOf = [ "graphical-session.target" ];
+        };
+        Service = {
+          Type = "oneshot";
+          ExecStart = "${pkgs.writeShellScript "set-dark-mode" ''
+            ${pkgs.dconf}/bin/dconf write /org/gnome/desktop/interface/color-scheme "'prefer-dark'"
+            ${pkgs.dconf}/bin/dconf write /org/gnome/desktop/interface/gtk-theme "'Yaru-purple-dark'"
+            ${pkgs.dconf}/bin/dconf write /org/gnome/desktop/interface/icon-theme "'Yaru-purple-dark'"
+          ''}";
+          RemainAfterExit = true;
+        };
+        Install.WantedBy = [ "graphical-session.target" ];
+      };
+
+      home.sessionVariables = {
+        GTK_THEME = "Yaru-purple-dark";
+        XCURSOR_THEME = "Yaru";
+        XCURSOR_SIZE = toString cursorSettings.size;
+        GSETTINGS_BACKEND = "dconf";
+        # Force libadwaita to read from GSettings/dconf instead of portal
+        ADW_DISABLE_PORTAL = "1";
+      };
 
       wayland.windowManager.hyprland = {
         enable = true;
@@ -102,20 +131,21 @@ in
         settings = {
           env = [
             "XCURSOR_SIZE,${toString cursorSettings.size}"
-            "XCURSOR_THEME,${cursorSettings.theme}"
+            "XCURSOR_THEME,Yaru"
             "HYPRCURSOR_SIZE,${toString cursorSettings.size}"
-            "HYPRCURSOR_THEME,${cursorSettings.theme}"
-            "QT_QPA_PLATFORMTHEME,kde"
+            "HYPRCURSOR_THEME,Yaru"
+            "QT_QPA_PLATFORMTHEME,gnome"
+            "QT_STYLE_OVERRIDE,adwaita-dark"
             "QT_QPA_PLATFORM,wayland;xcb"
-            "QT_QUICK_CONTROLS_STYLE,org.kde.desktop"
             "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
             "QT_AUTO_SCREEN_SCALE_FACTOR,1"
-            "XDG_MENU_PREFIX,plasma-"
-            "XDG_CURRENT_DESKTOP,Hyprland"
+            "XDG_CURRENT_DESKTOP,Hyprland:GNOME"
             "XDG_SESSION_TYPE,wayland"
             "XDG_SESSION_DESKTOP,Hyprland"
-            "GTK_USE_PORTAL,1"
-            "GTK_THEME,${gtkSettings.theme}"
+            "GTK_THEME,Yaru-purple-dark"
+            # Force libadwaita to read from GSettings/dconf instead of portal
+            "ADW_DISABLE_PORTAL,1"
+            "GSETTINGS_BACKEND,dconf"
           ];
 
           monitor = map mkMonitorStr monitors;
@@ -340,13 +370,12 @@ in
           ];
 
           exec-once = [
-            "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE XDG_SESSION_DESKTOP QT_QPA_PLATFORMTHEME QT_QPA_PLATFORM XDG_MENU_PREFIX GTK_THEME XCURSOR_THEME XCURSOR_SIZE"
+            "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE XDG_SESSION_DESKTOP"
             "systemctl --user import-environment"
             "swww-daemon"
             "waybar"
             "hypridle"
-            "systemctl --user start plasma-polkit-agent"
-            "kbuildsycoca6"
+            "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
             "swww img $HOME/Pictures/Wallpapers/skyline.jpg"
             "1password --silent"
             userSettings.browser
@@ -360,7 +389,7 @@ in
         swww
         hyprshot
         nwg-look
-        kdePackages.polkit-kde-agent-1
+        polkit_gnome
         playerctl
       ];
     };

@@ -78,6 +78,8 @@ in
       inputs.self.nixosModules.waydroid
       inputs.self.nixosModules.java
       inputs.self.nixosModules.mediaEditors
+      inputs.self.nixosModules.devTools
+      #inputs.self.nixosModules.ai
 
       # Home Manager
       inputs.home-manager.nixosModules.home-manager

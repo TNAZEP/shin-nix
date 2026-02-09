@@ -23,52 +23,57 @@
 
       environment.systemPackages = with pkgs; [
         xdg-utils
-        qt6Packages.qt6ct
-        libsForQt5.qt5ct
-        qt6Packages.qtstyleplugin-kvantum
-        libsForQt5.qtstyleplugin-kvantum
+        # GTK/GNOME theming
+        adwaita-icon-theme
+        adw-gtk3
         yaru-theme
         papirus-icon-theme
-        adwaita-icon-theme
         pavucontrol
+        # QT styling for GNOME
+        qgnomeplatform
+        qgnomeplatform-qt6
+        adwaita-qt
+        adwaita-qt6
+        # dconf/gsettings schemas
+        gsettings-desktop-schemas
+        gnome-settings-daemon
+        dconf
       ];
 
-      environment.variables.QT_QPA_PLATFORMTHEME = "kde";
+      # Use GNOME/Adwaita for QT apps
+      environment.variables = {
+        QT_QPA_PLATFORMTHEME = "gnome";
+        QT_STYLE_OVERRIDE = "adwaita-dark";
+      };
+
+      # Ensure gsettings schemas are found and libadwaita reads from dconf
+      environment.sessionVariables = {
+        XDG_DATA_DIRS = [ "${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}" ];
+        # Force libadwaita to read from GSettings/dconf instead of portal
+        ADW_DISABLE_PORTAL = "1";
+        GSETTINGS_BACKEND = "dconf";
+      };
+
+      programs.dconf.enable = true;
 
       xdg.portal = {
         enable = true;
         extraPortals = [
           pkgs.xdg-desktop-portal-gtk
           pkgs.xdg-desktop-portal-hyprland
-          pkgs.kdePackages.xdg-desktop-portal-kde
-          pkgs.xdg-desktop-portal-gnome
         ];
         config = {
-          common = {
-            default = [ "gtk" ];
-          };
+          common.default = [ "gtk" ];
           hyprland = {
-            default = [ "hyprland" "kde" "gtk" ];
+            default = [ "hyprland" "gtk" ];
             "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
             "org.freedesktop.impl.portal.AppChooser" = [ "gtk" ];
             "org.freedesktop.impl.portal.Settings" = [ "gtk" ];
             "org.freedesktop.impl.portal.OpenURI" = [ "gtk" ];
+            "org.freedesktop.impl.portal.Screenshot" = [ "hyprland" ];
+            "org.freedesktop.impl.portal.Screencast" = [ "hyprland" ];
           };
         };
       };
-
-      systemd.user.services.xdg-desktop-portal-kde = {
-        description = "Portal service (KDE implementation)";
-        partOf = [ "graphical-session.target" ];
-        after = [ "graphical-session.target" ];
-        wantedBy = [ "graphical-session.target" ];
-        serviceConfig = {
-          Type = "dbus";
-          BusName = "org.freedesktop.impl.portal.desktop.kde";
-          ExecStart = "${pkgs.kdePackages.xdg-desktop-portal-kde}/libexec/xdg-desktop-portal-kde";
-          Restart = "on-failure";
-        };
-      };
     };
-
 }
