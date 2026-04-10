@@ -2,7 +2,7 @@
 
 A modular, flake-based NixOS configuration designed for stability and ease of use. Managed with **Nix Flakes** and **Home Manager**.
 
-## 📂 Structure
+## Structure
 
 The repository is organized using **flake-parts** and **import-tree** following the Dendritic pattern:
 
@@ -11,9 +11,9 @@ The repository is organized using **flake-parts** and **import-tree** following 
 |     | Hostname   | OS   			| Board            | CPU                | RAM   | GPU                       | Purpose                                                                          |
 | --- | ---------- | -------------- | ---------------- | ------------------ | ----- | ------------------------- | -------------------------------------------------------------------------------- |
 | 🖥️  | `midgar`   | NixOS	        | Asus		       | Ryzen 7 5800X3D    | 32GB  | RX 9070XT / RTX 3070	    | Main Desktop for general use, development and gaming.		                       |
-| 💻  | `ishgard`  | MacOS 26		| Apple M1 air	   | M1 8C		        | 8 GB  | M1 7C	                    | General use, light development and media consumption.                            |
+| 💻  | `ishgard`  | Asahi Nixos		| Apple M1 air	   | M1 8C		        | 8 GB  | M1 7C	                    | General use, light development and media consumption.                            |
 
-## 🚀 Installation
+## Installation
 
 Follow these steps to install this configuration on a new machine (specifically targeting `midgar`, my desktop config).
 
