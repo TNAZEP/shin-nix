@@ -60,8 +60,8 @@ in
       inputs.self.nixosModules.hyprland
 
       # Gaming
-      inputs.self.nixosModules.steam
-      inputs.self.nixosModules.minecraft
+      inputs.self.nixosModules.base
+      inputs.self.nixosModules.blockGames
       inputs.self.nixosModules.retro
 
       # Apps & Utilities

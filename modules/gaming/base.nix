@@ -1,5 +1,5 @@
 {
-  flake.nixosModules.steam =
+  flake.nixosModules.base =
     { pkgs, ... }:
     {
       programs.steam = {
@@ -19,7 +19,6 @@
         lsfg-vk
         lsfg-vk-ui
         heroic
-        wowup-cf
       ];
     };
 }

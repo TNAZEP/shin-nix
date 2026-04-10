@@ -19,16 +19,4 @@
         polkitPolicyOwners = [ userSettings.username ];
       };
     };
-
-  flake.darwinModules.utilities =
-    { pkgs, ... }:
-    {
-      environment.systemPackages = with pkgs; [
-        nixfmt
-      ];
-
-      programs._1password.enable = true;
-      programs._1password-gui.enable = true;
-    };
-
 }

@@ -1,6 +1,6 @@
 { inputs, ... }:
 {
-  flake.nixosModules.minecraft =
+  flake.nixosModules.blockGames =
     { pkgs, ... }:
     {
       environment.systemPackages = with pkgs; [

@@ -16,16 +16,5 @@
         package = pkgs.zulu21;
       };
     };
-
-  flake.darwinModules.java =
-    { pkgs, ... }:
-    {
-      environment.systemPackages = with pkgs; [
-        zulu8
-        zulu17
-        zulu21
-        zulu25
-      ];
-    };
 }
 

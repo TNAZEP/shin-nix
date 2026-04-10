@@ -25,11 +25,6 @@ in
     default = { };
   };
 
-  options.flake.darwinModules = lib.mkOption {
-    type = lib.types.lazyAttrsOf lib.types.unspecified;
-    default = { };
-  };
-
   config.flake.nixosModules.common =
     { pkgs, ... }:
     {
@@ -46,16 +41,7 @@ in
         pkgs.speedtest-cli
       ];
     };
-
-  config.flake.darwinModules.common =
-    { pkgs, ... }:
-    {
-      nix.settings = commonNixSettings;
-      time.timeZone = "Asia/Tokyo";
-      nixpkgs.config.allowUnfree = true;
-      environment.systemPackages = commonPackages pkgs;
-    };
-
+    
   config.flake.homeModules.common =
     { ... }:
     {

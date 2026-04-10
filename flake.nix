@@ -15,16 +15,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nix-darwin = {
-      url = "github:LnL7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    caelestia-shell = {
-      url = "github:TNAZEP/ZepShell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     hyprland.url = "github:hyprwm/Hyprland";
 
     split-monitor-workspaces = {
@@ -34,9 +24,6 @@
 
     flake-parts.url = "github:hercules-ci/flake-parts";
     import-tree.url = "github:vic/import-tree";
-    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
-
-    hytale-launcher.url = "github:TNAZEP/HytaleLauncherFlake";
   };
 
   outputs =
@@ -44,7 +31,6 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
         "x86_64-linux"
-        "aarch64-darwin"
       ];
       imports = [
         (inputs.import-tree ./modules)

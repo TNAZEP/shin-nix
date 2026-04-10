@@ -1,10 +1,4 @@
 {
-  flake.darwinModules.browsers =
-    { ... }:
-    {
-      homebrew.casks = [ "firefox" ];
-    };
-
   flake.homeModules.browsers =
     {
       lib,
@@ -37,7 +31,7 @@
         "browser.discovery.enabled" = false;
         "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
         "browser.newtabpage.activity-stream.feeds.snippets" = false;
-        "browser.newtabpage.activity-stream.feeds.topsites" = false;
+        "browser.newtabpage.activity-stream.feeds.topsites" = true;
         "browser.newtabpage.activity-stream.section.highlights.includePocket" = false;
         "browser.newtabpage.activity-stream.showSponsored" = false;
         "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
@@ -47,7 +41,7 @@
       programs.firefox = {
         enable = true;
 
-        package = if pkgs.stdenv.isDarwin then null else pkgs.firefox;
+        package = pkgs.firefox;
 
         profiles.default = {
           id = 0;
@@ -56,13 +50,13 @@
           settings = sharedSettings;
         };
 
-        policies = lib.mkIf pkgs.stdenv.isLinux {
+        policies = {
           DisablePocket = true;
           DisableTelemetry = true;
         };
       };
 
-      xdg.mimeApps = lib.mkIf pkgs.stdenv.isLinux {
+      xdg.mimeApps = {
         enable = true;
         defaultApplications = {
           "text/html" = [ "firefox.desktop" ];
@@ -73,7 +67,7 @@
         };
       };
 
-      home.file = lib.mkIf pkgs.stdenv.isDarwin {
+      home.file = {
         "Library/Application Support/Mozilla/NativeMessagingHosts/com.1password.1password.json".text =
           builtins.toJSON onePassManifest;
       };
